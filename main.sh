@@ -7,7 +7,21 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
-# Softwares requeridos: fastqc, trimmomatic (conda)
+# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do pipeline
+BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
+if [[ -f "$BIBLIOTECA" ]]; then
+	echo "Carregando a biblioteca..."
+	source "$BIBLIOTECA"
+else
+	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	exit
+fi
+
+# Instalação dos pacotes requeridos
+	# Softwares Linux requeridos: fastqc
+	install_linux_if_missing "fastqc"
+	# Ambiente conda:
+	install_conda_if_missing
 
 # Argumentos passados na linha do comando para o script main.sh
 LIBNAME=$1 	# Nome da biblioteca de dados
@@ -42,15 +56,6 @@ else
 	fi
 fi
 
-# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do pipeline
-BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
-if [[ -f "$BIBLIOTECA" ]]; then
-	echo "Carregando a biblioteca..."
-	source "$BIBLIOTECA"
-else
-	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
-	exit
-fi
 
 # Testando a função qc
 # echo $INPUT_DIR
