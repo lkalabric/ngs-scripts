@@ -53,6 +53,8 @@ else
 fi
 
 # Testando a função qc
+echo $INPUT_DIR
+echo $OUTPUT_DIR
 qc $INPUT_DIR $OUTPUT_DIR
 
 # Parada para debug
