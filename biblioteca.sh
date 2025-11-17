@@ -18,7 +18,6 @@
 
 
 # Quality control report
-# Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 function qc () {
 	# Argumentos dentro da função:
@@ -40,33 +39,44 @@ function qc () {
 	fi
 }
 
-# Quality control filter using Trimmomatic
+# Trimagem de apaptadores de dados de sequencias Illumina
 # Link: http://www.usadellab.org/cms/?page=trimmomatic
-function trim_bper () {
+function trim () {
+	# Argumentos dentro da função:
+    # $1 caminho de entrada dos dados INPUT_DIR
+	# $2 caminho para salvamento dos resultados OUTPUT_DIR
+		INPUT_DIR=$1
+		OUTPUT_DIR="$2/trimmomatic"	
+	# Habilita o trimmomatic instalado em um ambiente conda dedicado
 	source activate trimmomatic
-	if [[ ! -d $TRIMMOMATICDIR ]]; then
-		mkdir -vp $TRIMMOMATICDIR
-		mkdir -vp $TEMPDIR
-		echo -e "\nExecutando trimmomatic em ${IODIR}...\n"
+	if [[ ! -d $OUTPUT_DIR ]]; then
+		mkdir -vp $OUTPUT_DIR
+		mkdir -vp $TEMP_DIR
+		echo -e "\nExecutando trimmomatic em ${INPUT_DIR}...\n"
 		# Executa o filtro de qualidade
-		trimmomatic PE -threads ${THREADS} -trimlog ${TRIMMOMATICDIR}/${LIBNAME}_trimlog.txt \
-					-summary ${TRIMMOMATICDIR}/${LIBNAME}_summary.txt \
-					${IODIR}/*.fastq* \
-					${TRIMMOMATICDIR}/${LIBNAME}_R1.fastq ${TEMPDIR}/${LIBNAME}_R1u.fastq \
-					${TRIMMOMATICDIR}/${LIBNAME}_R2.fastq ${TEMPDIR}/${LIBNAME}_R2u.fastq \
+		trimmomatic PE -threads ${THREADS} -trimlog ${OUTPUT_DIR}/${LIBNAME}_trimlog.txt \
+					-summary ${OUTPUT_DIR}/${LIBNAME}_summary.txt \
+					${INPUT_DIR}/*.fastq* \
+					${OUTPUT_DIR}/${LIBNAME}_R1.fastq ${TEMP_DIR}/${LIBNAME}_R1u.fastq \
+					${OUTPUT_DIR}/${LIBNAME}_R2.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq \
 					SLIDINGWINDOW:4:20 MINLEN:35
 		# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-		cat ${TEMPDIR}/${LIBNAME}_R1u.fastq ${TEMPDIR}/${LIBNAME}_R2u.fastq > ${TRIMMOMATICDIR}/${LIBNAME}_R1R2u.fastq
+		cat ${TEMP_DIR}/${LIBNAME}_R1u.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq > ${OUTPUT_DIR}/${LIBNAME}_R1R2u.fastq
 	else
 		echo "Dados analisados previamente..."
 	fi
   	FLAG=1
-	IODIR=$TRIMMOMATICDIR              
+	IODIR=$OUTPUT_DIR              
 }
 
 # Correção de erros
 # Link: https://musket.sourceforge.net/homepage.htm
-function musket_bper () {
+function musket () {
+	# Argumentos dentro da função:
+	# $1 caminho de entrada dos dados INPUT_DIR
+	# $2 caminho para salvamento dos resultados OUTPUT_DIR
+	INPUT_DIR=$1
+	OUTPUT_DIR="$2/musket"
 	if [[ ! -d $MUSKETDIR ]]; then
 		mkdir -vp $MUSKETDIR
 		echo -e "\nExecutando musket em ${IODIR}...\n"
