@@ -293,7 +293,7 @@ function trim () {
 		INPUT_DIR=$1
 		OUTPUT_DIR="$2/trimmomatic"	
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
-	source activate trimmomatic
+	source activate trimmomatic_env
 	if [[ ! -d $OUTPUT_DIR ]]; then
 		mkdir -vp $OUTPUT_DIR
 		mkdir -vp $TEMP_DIR
