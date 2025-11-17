@@ -177,13 +177,13 @@ function install_conda () {
 	# =================================================================
 	
 	# Nome do ambiente Conda desejado.
-	ENV_NAME="bioinfo_base_env"
+	ENV_NAME=("$@")
 	
 	# Lista de pacotes a serem instalados (todos os argumentos passados ao script)
 	PACKAGES_TO_INSTALL=("$@")
 	
 	echo "=================================================="
-	echo "Iniciando a verificação do ambiente Conda: ${ENV_NAME}"
+	echo "Iniciando a verificação do ambiente Conda: ${ENV_NAME[*]}"
 	echo "Pacotes solicitados: ${PACKAGES_TO_INSTALL[*]}"
 	echo "=================================================="
 	
@@ -205,22 +205,22 @@ function install_conda () {
 	echo "Verificando a existência do ambiente..."
 	
 	# O 'grep -q' faz uma busca silenciosa e 'echo $?' retorna o código de saída (0=encontrado, 1=não encontrado).
-	conda info --envs | grep -q "^${ENV_NAME} "
+	conda info --envs | grep -q "^${ENV_NAME[*]} "
 	ENV_EXISTS=$?
 	
 	INSTALLATION_COMMAND=""
 	
 	if [ ${ENV_EXISTS} -eq 0 ]; then
-	    echo "✅ Ambiente '${ENV_NAME}' encontrado."
+	    echo "✅ Ambiente '${ENV_NAME[*]}' encontrado."
 	    # 4. AMBIENTE EXISTE: Tenta instalar/atualizar os pacotes.
 	    echo "Garantindo que os pacotes estejam instalados/atualizados..."
 	    # Constrói o comando 'conda install' com a lista de pacotes.
-	    INSTALLATION_COMMAND="conda install -n \"${ENV_NAME}\" -y ${PACKAGES_TO_INSTALL[*]}"
+	    INSTALLATION_COMMAND="conda install -n \"${ENV_NAME[*]}\" -y ${PACKAGES_TO_INSTALL[*]}"
 	else
-	    echo "❌ Ambiente '${ENV_NAME}' não encontrado. Criando ambiente e instalando pacotes..."
+	    echo "❌ Ambiente '${ENV_NAME[*]}' não encontrado. Criando ambiente e instalando pacotes..."
 	    # 5. AMBIENTE NÃO EXISTE: Cria o ambiente e instala os pacotes.
 	    # Constrói o comando 'conda create' com a lista de pacotes.
-	    INSTALLATION_COMMAND="conda create -n \"${ENV_NAME}\" -y ${PACKAGES_TO_INSTALL[*]}"
+	    INSTALLATION_COMMAND="conda create -n \"${ENV_NAME[*]}\" -y ${PACKAGES_TO_INSTALL[*]}"
 	fi
 	
 	# 6. EXECUÇÃO DO COMANDO
@@ -230,9 +230,9 @@ function install_conda () {
 	# 7. VERIFICAÇÃO DO RESULTADO
 	if [ $? -eq 0 ]; then
 	    echo "=================================================="
-	    echo "✅ Sucesso! Os pacotes foram instalados/atualizados no ambiente '${ENV_NAME}'."
+	    echo "✅ Sucesso! Os pacotes foram instalados/atualizados no ambiente '${ENV_NAME[*]}'."
 	    echo "Para ativar e usar, execute:"
-	    echo "conda activate ${ENV_NAME}"
+	    echo "conda activate ${ENV_NAME[*]}"
 	    echo "=================================================="
 	    exit 0
 	else
