@@ -7,7 +7,7 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
-# Softwares requeridos: fastqc
+# Softwares requeridos: fastqc, trimmomatic (conda)
 
 # Argumentos passados na linha do comando para o script main.sh
 LIBNAME=$1 	# Nome da biblioteca de dados
