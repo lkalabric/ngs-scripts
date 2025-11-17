@@ -15,8 +15,6 @@ BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
 	source "$BIBLIOTECA"
-	# Testando a função qc
-	qc $INPUT_DIR $OUTPUT_DIR
 else
 	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
 	exit
@@ -39,13 +37,13 @@ RAWDIR="${HOME}/data/${LIBNAME}"
 if [[ ! -d $RAWDIR ]]; then
 	echo "Erro: Pasta de dados não encontrada!"
 	exit 1
+else
+	INPUT_DIR=$RAWDIR
 fi
-INPUT_DIR=$RAWDIR
 
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
 OUTPUT_DIR="${HOME}/results/${LIBNAME}/wf${WF}"
-# Cria a pasta de resultados
 if [[ ! -d "${OUTPUT_DIR}" ]]; then
 	mkdir -vp ${OUTPUT_DIR}
 else
@@ -56,6 +54,9 @@ else
 		[[ ! -d "${OUTPUT_DIR}" ]] || mkdir -vp ${OUTPUT_DIR} && rm -r "${OUTPUT_DIR}"; mkdir -vp "${OUTPUT_DIR}"
 	fi
 fi
+
+# Testando a função qc
+qc $INPUT_DIR $OUTPUT_DIR
 
 #
 # Main do script
