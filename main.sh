@@ -53,12 +53,12 @@ else
 fi
 
 # Testando a função qc
-echo $INPUT_DIR
-echo $OUTPUT_DIR
-qc $INPUT_DIR $OUTPUT_DIR
+# echo $INPUT_DIR
+# echo $OUTPUT_DIR
+# qc $INPUT_DIR $OUTPUT_DIR
 
 # Parada para debug
-exit
+# exit
 
 #
 # Main do script
@@ -74,7 +74,7 @@ exit
 # Define as etapas de cada workflow
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
-	'qc'
+	'qc trim'
 	'spades_bper'
 	'trim_bper spades_bper'
 	'trim_bper musket_bper spades_bper'
