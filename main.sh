@@ -17,12 +17,14 @@ else
 	exit
 fi
 
-# Instalação dos pacotes requeridos
-	# Softwares Linux requeridos: fastqc
-	install_linux_if_missing "fastqc"
-	# Ambiente conda:
-	install_conda_if_missing
-
+# Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
+	# Instalação dos softwares Linux requeridos, se necessário
+		install_linux_pakages_if_missing "fastqc"
+	# Instalação do conda, se necessário:
+		install_conda_if_missing
+	# Instalação dos ambientes e pacotes
+		install_conda_packages_if_missing "trimmomatic"
+		
 # Argumentos passados na linha do comando para o script main.sh
 LIBNAME=$1 	# Nome da biblioteca de dados
 WF=$2		# Número da workflow da análise
