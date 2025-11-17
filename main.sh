@@ -9,7 +9,7 @@
 
 # Requirements: fastqc
 
-# Entrada de dados
+# Entrada de dados na linha do comando
 LIBNAME=$1
 WF=$2
 if [[ $# -ne 2 ]]; then
@@ -31,7 +31,7 @@ OUTPUT_DIR="${HOME}/results/${LIBNAME}"
 if [ ! -d "$OUTPUT_DIR" ]; then
     # O '!' inverte a condição (NÃO é um diretório)
     echo "Diretório '$OUTPUT_DIR' não encontrado. Criando..."
-    mkdir "$OUTPUT_DIR"
+    mkdir -p "$OUTPUT_DIR"
 else
     echo "Diretório '$OUTPUT_DIR' já existe. Ignorando a criação."
 fi
