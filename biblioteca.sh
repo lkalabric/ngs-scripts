@@ -25,13 +25,13 @@ function qc () {
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
-		OUTPUT_DIR=$2
+		OUTPUT_DIR="$2/fastqc"
 	# Parâmetros padrões e pseronalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	# Execução do comando propriamente
 	if [[ ! -d "$OUTPUT_DIR" ]]; then
 		echo "Criando a pasta dos resultados do fastqc..."
-		mkdir -vp "$OUTPUT_DIR/fastqc"
+		mkdir -vp "$OUTPUT_DIR"
 		echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
 		fastqc --noextract --nogroup -o ${OUTPUT_DIR}/fastqc ${INPUT_DIR}/*.fastq.gz
 		INPUT_DIR=$OUTPUT_DIR
