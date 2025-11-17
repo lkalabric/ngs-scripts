@@ -40,8 +40,6 @@ else
 		[[ ! -d "${OUTPUT_DIR}" ]] || mkdir -vp ${OUTPUT_DIR} && rm -r "${OUTPUT_DIR}"; mkdir -vp "${OUTPUT_DIR}"
 	fi
 fi
-# Parada para degub do código
-exit
 
 # Criar um input_validation.sh a partir do código abaixo
 # Validação dos dados
@@ -59,34 +57,39 @@ exit
 #    exit 3
 #fi
 
-
-
-TEMPDIR="${RESULTSDIR}/TEMP"
-TRIMMOMATICDIR="${RESULTSDIR}/TRIMMOMATIC"
-MUSKETDIR="${RESULTSDIR}/MUSKET"
-FLASHDIR="${RESULTSDIR}/FLASH"
-KHMERDIR="${RESULTSDIR}/KHMER"
-SPADESDIR="${RESULTSDIR}/SPADES"
-SPADES2DIR="${RESULTSDIR}/SPADES2"
-FLAG=0
+#TEMPDIR="${RESULTSDIR}/TEMP"
+#TRIMMOMATICDIR="${RESULTSDIR}/TRIMMOMATIC"
+#MUSKETDIR="${RESULTSDIR}/MUSKET"
+#FLASHDIR="${RESULTSDIR}/FLASH"
+#KHMERDIR="${RESULTSDIR}/KHMER"
+#SPADESDIR="${RESULTSDIR}/SPADES"
+#SPADES2DIR="${RESULTSDIR}/SPADES2"
+#FLAG=0
 
 # Parâmetro de otimização das análises
-KMER=21 # Defaut MAX_KMER_SIZE=28. Se necessário, alterar o Makefile e recompilar
-THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
+#KMER=21 # Defaut MAX_KMER_SIZE=28. Se necessário, alterar o Makefile e recompilar
+#THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
 
 # Quality control report
 # Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 function qc () {
-	
-	if [[ ! -d $FASTQCDIR ]]; then
-		mkdir -vp $FASTQCDIR
-		echo -e "Executando fastqc em ${IODIR}...\n"
-		fastqc --noextract --nogroup -o ${FASTQCDIR} ${IODIR}/*.fastq.gz
+	# Verificar se os arquivos de entrada são compatíveis com este comando!!!
+	source ${HOME}/repos/ngs-scripts/param/fastqc.param
+	if [[ ! -d $RESULTSDIR ]]; then
+		echo "Criando a pasta dos resultados do fastqc..."
+		mkdir -vp $RESULTSDIR
+		echo -e "Executando fastqc em ${INPUT_DIR}...\n"
+		fastqc --noextract --nogroup -o ${RESULTSDIR} ${INPUT_DIR}/*.fastq.gz
 	else
 		echo "Dados analisados previamente..."
 	fi
 }
+
+
+# Parada para degub do código
+exit
+
 
 # Configuração das pastas de saída
 echo "Preparando pastas para (re-)análise dos dados..."
