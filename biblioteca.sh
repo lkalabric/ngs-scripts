@@ -1,3 +1,88 @@
+function install_conda () {
+	# =================================================================
+	# Script de Instalação Condicional do Miniconda
+	# Este script verifica se o ambiente Conda está instalado.
+	# Se não estiver, ele baixa e instala o Miniconda.
+	# =================================================================
+	
+	# Variáveis de configuração
+	CONDA_INSTALLER="Miniconda3-latest-Linux-x86_64.sh"
+	CONDA_DOWNLOAD_URL="https://repo.anaconda.com/miniconda/${CONDA_INSTALLER}"
+	CONDA_INSTALL_DIR="$HOME/miniconda3"
+	
+	echo "=================================================="
+	echo "Verificando a instalação do Conda..."
+	echo "=================================================="
+	# 1. Função para verificar a existência do comando 'conda'
+	# O 'command -v' verifica se o comando está no PATH.
+	if command -v conda &> /dev/null; then
+	    echo "✅ Conda já está instalado e disponível no PATH."
+	    echo "Localização: $(command -v conda)"
+	    echo "Status: Nenhuma ação de instalação necessária."
+	    exit 0
+	fi
+	
+	# 2. Se o Conda não for encontrado, inicia a instalação
+	echo "❌ Conda não encontrado. Iniciando a instalação do Miniconda..."
+	
+	# 2.1. Verifica a existência do 'curl' ou 'wget' para download
+	if ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
+	    echo "ERRO FATAL: 'curl' ou 'wget' não estão instalados."
+	    echo "Não é possível baixar o instalador. Instale um deles e tente novamente."
+	    exit 1
+	fi
+	
+	# 2.2. Executa o download
+	echo "Baixando o instalador do Miniconda de: ${CONDA_DOWNLOAD_URL}"
+	if command -v curl &> /dev/null; then
+	    # Usa curl (preferido)
+	    curl -o "$CONDA_INSTALLER" "$CONDA_DOWNLOAD_URL"
+	elif command -v wget &> /dev/null; then
+	    # Fallback para wget
+	    wget -O "$CONDA_INSTALLER" "$CONDA_DOWNLOAD_URL"
+	fi
+	
+	if [ $? -ne 0 ]; then
+	    echo "ERRO: Falha ao baixar o instalador."
+	    rm -f "$CONDA_INSTALLER" # Tenta remover o arquivo parcial
+	    exit 1
+	fi
+	
+	# 2.3. Executa a instalação silenciosa
+	echo "Executando a instalação não interativa..."
+	# Flags de Instalação:
+	# -b: Batch mode (não interativo)
+	# -p: Define o prefixo de instalação (local onde será instalado)
+	bash "$CONDA_INSTALLER" -b -p "$CONDA_INSTALL_DIR"
+	
+	if [ $? -eq 0 ]; then
+	    echo "✅ Instalação do Miniconda concluída com sucesso em: ${CONDA_INSTALL_DIR}"
+	else
+	    echo "ERRO: O instalador retornou um código de falha."
+	    rm -f "$CONDA_INSTALLER"
+	    exit 1
+	fi
+	
+	# 2.4. Limpa o instalador
+	echo "Removendo o arquivo do instalador: ${CONDA_INSTALLER}"
+	rm -f "$CONDA_INSTALLER"
+	
+	# 3. Inicialização e Configuração
+	echo "Configurando o ambiente Shell para o Conda (conda init)..."
+	# O comando 'init' adiciona as configurações necessárias ao seu shell profile (~/.bashrc)
+	"$CONDA_INSTALL_DIR"/bin/conda init
+	
+	echo "=================================================="
+	echo "INSTALAÇÃO CONCLUÍDA. É necessário REINICIAR o terminal (ou fazer 'source')."
+	echo "Para que o comando 'conda' funcione imediatamente nesta sessão:"
+	echo "source ~/.bashrc"
+	echo "=================================================="
+	
+	# O script de instalação Bash deve terminar com um status de sucesso
+	exit 0
+}
+
+
 #function input_validation () {
   # Criar um input_validation.sh a partir do código abaixo
   # Validação dos dados
