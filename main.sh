@@ -12,7 +12,7 @@
 # Funções disponíveis para execução do pipeline
 BIBLIOTECA="{HOME}/repos/ngs-scripts/biblioteca.sh"
 
-if [[ ! -d "${BIBLIOTECA}" ]]; then
+if [[ ! -f "${BIBLIOTECA}" ]]; then
 	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
 	exit
 else
