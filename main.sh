@@ -7,11 +7,11 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
-# Requirements: fastqc
+# Softwares requeridos: fastqc
 
-# Argumento passados na linha do comando
-LIBNAME=$1
-WF=$2
+# Argumentos passados na linha do comando para o script main.sh
+LIBNAME=$1 	# Nome da biblioteca de dados
+WF=$2		# Número da workflow da análise
 if [[ $# -ne 2 ]]; then
 	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
 	echo "Sintaxe: ./main.sh <LIBRARY> <WF: 1, 2, 3,...>"
@@ -30,18 +30,19 @@ fi
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
 OUTPUT_DIR="${HOME}/results/${LIBNAME}/wf${WF}"
-if [[ ! -d "${OUTPUT_DIR}" ]]; then
-	mkdir -vp ${OUTPUT_DIR}
+if [[ ! -d "$OUTPUT_DIR" ]]; then
+	mkdir -vp $OUTPUT_DIR
 else
 	read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
 	if [[ $REPLY =~ ^[Ss]$ ]]; then
 	  # Reseta a pasta de resultados do worflow
 		echo -e "\nApagando as pastas e reiniciando as análises..."
-		[[ ! -d "${OUTPUT_DIR}" ]] || mkdir -vp ${OUTPUT_DIR} && rm -r "${OUTPUT_DIR}"; mkdir -vp "${OUTPUT_DIR}"
+		# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
+		rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
 	fi
 fi
 
-# Carregamento da biblioteca de funções disponíveis para execução do pipeline
+# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do pipeline
 BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
