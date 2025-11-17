@@ -1,4 +1,86 @@
-function install_conda () {
+function install_linux_if_missing () {
+	# =================================================================
+	# Script: Instalação Condicional de Comandos Ausentes
+	# Uso: Este script verifica se um comando está instalado. Se não estiver,
+	# tenta instalá-lo usando o gerenciador de pacotes correto.
+	# =================================================================
+	
+	# Verifica se o script foi chamado com um argumento
+	if [ -z "$1" ]; then
+	    echo "Uso: $0 <nome_do_comando>"
+	    echo "Exemplo: $0 htop"
+	    exit 1
+	fi
+	
+	# O nome do comando/pacote que o usuário deseja instalar
+	COMMAND_NAME="$1"
+	
+	echo "=================================================="
+	echo "Verificando o comando: ${COMMAND_NAME}"
+	echo "=================================================="
+	
+	# 1. VERIFICAÇÃO INICIAL: Usa 'command -v' (ou 'which') para verificar se o comando já existe.
+	if command -v "${COMMAND_NAME}" &> /dev/null; then
+	    echo "✅ Comando '${COMMAND_NAME}' já está instalado."
+	    echo "Localização: $(command -v "${COMMAND_NAME}")"
+	    exit 0
+	fi
+	
+	# 2. INSTALAÇÃO CONDICIONAL (&&): Se o comando não for encontrado, o script continua.
+	echo "❌ Comando '${COMMAND_NAME}' não encontrado. Iniciando a instalação..."
+	
+	# 3. DETECÇÃO DO GERENCIADOR DE PACOTES
+	PACKAGE_MANAGER=""
+	INSTALL_CMD=""
+	
+	# Detecta distros baseadas em Debian/Ubuntu (APT)
+	if command -v apt &> /dev/null; then
+	    PACKAGE_MANAGER="APT (Debian/Ubuntu)"
+	    INSTALL_CMD="sudo apt update && sudo apt install -y ${COMMAND_NAME}"
+	
+	# Detecta distros baseadas em Fedora/CentOS/RHEL (DNF/YUM)
+	elif command -v dnf &> /dev/null; then
+	    PACKAGE_MANAGER="DNF (Fedora/RHEL 8+)"
+	    INSTALL_CMD="sudo dnf install -y ${COMMAND_NAME}"
+	elif command -v yum &> /dev/null; then
+	    PACKAGE_MANAGER="YUM (CentOS/RHEL 7-)"
+	    INSTALL_CMD="sudo yum install -y ${COMMAND_NAME}"
+	
+	# Detecta distros baseadas em Arch Linux (Pacman)
+	elif command -v pacman &> /dev/null; then
+	    PACKAGE_MANAGER="Pacman (Arch Linux)"
+	    INSTALL_CMD="sudo pacman -S --noconfirm ${COMMAND_NAME}"
+	
+	# Detecta distros baseadas em openSUSE (Zypper)
+	elif command -v zypper &> /dev/null; then
+	    PACKAGE_MANAGER="Zypper (openSUSE)"
+	    INSTALL_CMD="sudo zypper install -y ${COMMAND_NAME}"
+	
+	else
+	    echo "ERRO: Não foi possível identificar um gerenciador de pacotes compatível (apt, dnf, yum, pacman, zypper)."
+	    echo "Tente instalar o comando manualmente."
+	    exit 1
+	fi
+	
+	# 4. EXECUÇÃO DA INSTALAÇÃO
+	echo "=================================================="
+	echo "Gerenciador de Pacotes Detectado: ${PACKAGE_MANAGER}"
+	echo "Comando a ser executado: ${INSTALL_CMD}"
+	echo "=================================================="
+	
+	# O comando de instalação é executado. Ele pode incluir o operador && internamente.
+	eval "${INSTALL_CMD}"
+	
+	# 5. VERIFICAÇÃO FINAL: Se a instalação falhar, exibe uma mensagem.
+	# Usa o código de saída do comando 'eval' ($?)
+	if [ $? -eq 0 ]; then
+	    echo "✅ Instalação do '${COMMAND_NAME}' concluída com sucesso."
+	else
+	    echo "ERRO: A instalação falhou. Verifique se o nome do pacote está correto ou se você tem permissão sudo."
+	fi
+}
+
+function install_conda_if_missing () {
 	# =================================================================
 	# Script de Instalação Condicional do Miniconda
 	# Este script verifica se o ambiente Conda está instalado.
