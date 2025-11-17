@@ -14,7 +14,7 @@ BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
-	source ".${BIBLIOTECA}"
+	source "$BIBLIOTECA"
 	# Testando a função qc
 	qc
 else
