@@ -41,93 +41,48 @@ else
 	fi
 fi
 
-# Criar um input_validation.sh a partir do código abaixo
-# Validação dos dados
-# Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
-# Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
-#INDEX=0
-#for FILE in $(find ${IODIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
-#	FULLNAME[$INDEX]=${FILE}
-#	((INDEX++))
-#done
-#SAMPLENAME=$(echo $FULLNAME[0] | cut -d "E" -f 1)
-#LIBSUFIX=$(echo $LIBNAME | cut -d "_" -f 2)
-#if [[ $SAMPLENAME -ne $LIBSUFIX ]]; then
-#    echo "Você copiou os dados errados para a pasta $LIBNAME!"
-#    exit 3
-#fi
+#
+# Main do script
+#
 
-#TEMPDIR="${RESULTSDIR}/TEMP"
-#TRIMMOMATICDIR="${RESULTSDIR}/TRIMMOMATIC"
-#MUSKETDIR="${RESULTSDIR}/MUSKET"
-#FLASHDIR="${RESULTSDIR}/FLASH"
-#KHMERDIR="${RESULTSDIR}/KHMER"
-#SPADESDIR="${RESULTSDIR}/SPADES"
-#SPADES2DIR="${RESULTSDIR}/SPADES2"
-#FLAG=0
+# wf1 - quality control
+# wf2 - naive assembly with no filtering or correction
+# wf3 - method with filtering but without error correction
+# wf4 - method with filtering and error correction
+# wf5 - test flash
+# wf6 - test montagem contigs end-to-end
 
-# Parâmetro de otimização das análises
-#KMER=21 # Defaut MAX_KMER_SIZE=28. Se necessário, alterar o Makefile e recompilar
-#THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
+# Define as etapas de cada workflow
+# Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
+WORKFLOWLIST=(
+	'qc'
+	'spades_bper'
+	'trim_bper spades_bper'
+	'trim_bper musket_bper spades_bper'
+	'trim_bper musket_bper flash_bper spades_bper'
+	'spades_bper spades2_bper'
+)
 
-# Quality control report
-# Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
-# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-function qc () {
-	# Verificar se os arquivos de entrada são compatíveis com este comando!!!
-	source ${HOME}/repos/ngs-scripts/param/fastqc.param
-	if [[ ! -d $RESULTSDIR ]]; then
-		echo "Criando a pasta dos resultados do fastqc..."
-		mkdir -vp $RESULTSDIR
-		echo -e "Executando fastqc em ${INPUT_DIR}...\n"
-		fastqc --noextract --nogroup -o ${RESULTSDIR} ${INPUT_DIR}/*.fastq.gz
-	else
-		echo "Dados analisados previamente..."
-	fi
-}
-
-
-# Parada para degub do código
-exit
-
-
-# Configuração das pastas de saída
-echo "Preparando pastas para (re-)análise dos dados..."
-RESULTSDIR="${HOME}/ngs-analysis/${LIBNAME}/wf${WF}"
-# Cria a pasta de resultados
-if [[ ! -d "${RESULTSDIR}" ]]; then
-	mkdir -vp ${RESULTSDIR}
-else
-	read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
-	if [[ $REPLY =~ ^[Ss]$ ]]; then
-	  # Reseta a pasta de resultados do worflow
-		echo -e "\nApagando as pastas e re-iniciando as análises..."
-		[[ ! -d "${RESULTSDIR}" ]] || mkdir -vp ${RESULTSDIR} && rm -r "${RESULTSDIR}"; mkdir -vp "${RESULTSDIR}"
-	fi
+# Validação do WF
+if [[ $WF -gt ${#WORKFLOWLIST[@]} ]]; then
+	echo "Erro: Workflow não definido!"
+	exit 4
 fi
-FASTQCDIR="${RESULTSDIR}/FASTQC"
-TEMPDIR="${RESULTSDIR}/TEMP"
-TRIMMOMATICDIR="${RESULTSDIR}/TRIMMOMATIC"
-MUSKETDIR="${RESULTSDIR}/MUSKET"
-FLASHDIR="${RESULTSDIR}/FLASH"
-KHMERDIR="${RESULTSDIR}/KHMER"
-SPADESDIR="${RESULTSDIR}/SPADES"
-SPADES2DIR="${RESULTSDIR}/SPADES2"
-FLAG=0
 
-# Parâmetro de otimização das análises
-KMER=21 # Defaut MAX_KMER_SIZE=28. Se necessário, alterar o Makefile e recompilar
-THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
+# Execução das análises propriamente ditas a partir do workflow selecionado
+echo -e "\nExecutando o workflow WF$WF..."
 
-# Quality control report
-# Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
-# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-function qc_bper () {
-	if [[ ! -d $FASTQCDIR ]]; then
-		mkdir -vp $FASTQCDIR
-		echo -e "Executando fastqc em ${IODIR}...\n"
-		fastqc --noextract --nogroup -o ${FASTQCDIR} ${IODIR}/*.fastq.gz
-	else
-		echo "Dados analisados previamente..."
-	fi
-}
+# Índice para o array workflowList 0..n
+INDICE=$(expr $WF - 1)
+echo "Passos do WF$WF: ${WORKFLOWLIST[$INDICE]}"
+
+# Separa cada etapa do workflow no vetor steps
+read -r -a STEPS <<< "${WORKFLOWLIST[$INDICE]}"
+for CALL_FUNC in ${STEPS[@]}; do
+	echo -e "\nExecutando o passo $CALL_FUNC... "
+	eval $CALL_FUNC
+done
+
+# Gera o log das análises
+#log_generator.sh ${LIBNAME} ${WF}
+#exit 7
