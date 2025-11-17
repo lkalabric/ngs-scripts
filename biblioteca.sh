@@ -23,6 +23,7 @@
 function qc () {
 	# Verificar se os arquivos de entrada são compatíveis com este comando!!!
 	source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+	RESULTS_DIR="${OUTPUT_DIR}/fastqc"
 	if [[ ! -d $RESULTS_DIR ]]; then
 		echo "Criando a pasta dos resultados do fastqc..."
 		mkdir -vp $RESULTS_DIR
