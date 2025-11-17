@@ -21,14 +21,19 @@
 # Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 function qc () {
-	# Verificar se os arquivos de entrada são compatíveis com este comando!!!
-	source "${HOME}/repos/ngs-scripts/param/fastqc.param"
-	RESULTS_DIR="${OUTPUT_DIR}/fastqc"
+	# Argumentos dentro da função:
+    # $1 caminho de entrada dos dados INPUT_DIR
+	# $2 caminho para salvamento dos resultados OUTPUT_DIR
+		INPUT_DIR=$1
+		OUTPUT_DIR="$2/fastqc"
+	# Parâmetros padrões e pseronalizados pelo usuário
+		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+	# Execução do comando propriamente
 	if [[ ! -d $RESULTS_DIR ]]; then
 		echo "Criando a pasta dos resultados do fastqc..."
 		mkdir -vp $RESULTS_DIR
 		echo -e "Executando fastqc em ${INPUT_DIR}...\n"
-		fastqc --noextract --nogroup -o ${RESULTS_DIR} ${INPUT_DIR}/*.fastq.gz
+		fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/*.fastq.gz
 	else
 		echo "Dados analisados previamente..."
 	fi
