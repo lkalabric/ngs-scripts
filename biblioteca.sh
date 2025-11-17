@@ -22,12 +22,12 @@
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 function qc () {
 	# Verificar se os arquivos de entrada são compatíveis com este comando!!!
-	source ${HOME}/repos/ngs-scripts/param/fastqc.param
-	if [[ ! -d $RESULTSDIR ]]; then
+	source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+	if [[ ! -d $RESULTS_DIR ]]; then
 		echo "Criando a pasta dos resultados do fastqc..."
-		mkdir -vp $RESULTSDIR
+		mkdir -vp $RESULTS_DIR
 		echo -e "Executando fastqc em ${INPUT_DIR}...\n"
-		fastqc --noextract --nogroup -o ${RESULTSDIR} ${INPUT_DIR}/*.fastq.gz
+		fastqc --noextract --nogroup -o ${RESULTS_DIR} ${INPUT_DIR}/*.fastq.gz
 	else
 		echo "Dados analisados previamente..."
 	fi
