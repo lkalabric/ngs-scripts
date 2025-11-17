@@ -216,7 +216,7 @@ function install_conda_packages_if_missing () {
 	        echo "   ✅ Ambiente '${ENV_NAME}' encontrado."
 	        # Ambiente existe: Usa 'install' para garantir que o pacote esteja lá (e atualizado)
 	        echo "   -> Garantindo que '${PACKAGE_NAME}' esteja instalado/atualizado..."
-	        INSTALLATION_COMMAND="conda install -n \"${ENV_NAME}\" \"${PACKAGE_NAME}\" -y"
+	        INSTALLATION_COMMAND="conda -c bioconda -c conda-forge -c defaults -n \"${ENV_NAME}\" \"${PACKAGE_NAME}\" -y"
 	    else
 	        echo "   ❌ Ambiente '${ENV_NAME}' não encontrado."
 	        # Ambiente não existe: Usa 'create' para criar e instalar o pacote
