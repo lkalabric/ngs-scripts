@@ -1,4 +1,4 @@
-function input_validation () {
+#function input_validation () {
   # Criar um input_validation.sh a partir do código abaixo
   # Validação dos dados
   # Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
@@ -14,7 +14,7 @@ function input_validation () {
   #    echo "Você copiou os dados errados para a pasta $LIBNAME!"
   #    exit 3
   #fi
-}
+#}
 
 
 # Quality control report
