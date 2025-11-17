@@ -24,6 +24,7 @@ function install_linux_if_missing () {
 	    echo "✅ Comando '${COMMAND_NAME}' já está instalado."
 	    # echo "Localização: $(command -v "${COMMAND_NAME}")"
 	    # exit 0
+		return
 	fi
 	
 	# 2. INSTALAÇÃO CONDICIONAL (&&): Se o comando não for encontrado, o script continua.
@@ -99,9 +100,10 @@ function install_conda_if_missing () {
 	# O 'command -v' verifica se o comando está no PATH.
 	if command -v conda &> /dev/null; then
 	    echo "✅ Conda já está instalado e disponível no PATH."
-	    echo "Localização: $(command -v conda)"
-	    echo "Status: Nenhuma ação de instalação necessária."
-	    exit 0
+	    # echo "Localização: $(command -v conda)"
+	    # echo "Status: Nenhuma ação de instalação necessária."
+	    # exit 0
+		return
 	fi
 	
 	# 2. Se o Conda não for encontrado, inicia a instalação
