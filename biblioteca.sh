@@ -33,7 +33,7 @@ function qc () {
 		echo "Criando a pasta dos resultados do fastqc..."
 		mkdir -vp "$OUTPUT_DIR"
 		echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
-		fastqc --noextract --nogroup -o ${OUTPUT_DIR}/fastqc ${INPUT_DIR}/*.fastq.gz
+		fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/*.fastq.gz
 		INPUT_DIR=$OUTPUT_DIR
 	else
 		echo "Dados analisados previamente..."
