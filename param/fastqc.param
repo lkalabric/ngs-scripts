@@ -1,1 +1,2 @@
-
+INPUT_TYPE="*.fastq.gz"
+RESULTS_DIR="${OUTPUT_DIR}/fastqc"
