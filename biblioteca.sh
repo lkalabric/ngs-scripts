@@ -22,8 +22,8 @@ function install_linux_if_missing () {
 	# 1. VERIFICAÇÃO INICIAL: Usa 'command -v' (ou 'which') para verificar se o comando já existe.
 	if command -v "${COMMAND_NAME}" &> /dev/null; then
 	    echo "✅ Comando '${COMMAND_NAME}' já está instalado."
-	    echo "Localização: $(command -v "${COMMAND_NAME}")"
-	    exit 0
+	    # echo "Localização: $(command -v "${COMMAND_NAME}")"
+	    # exit 0
 	fi
 	
 	# 2. INSTALAÇÃO CONDICIONAL (&&): Se o comando não for encontrado, o script continua.
