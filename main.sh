@@ -45,7 +45,7 @@ exit
 
 # Criar um input_validation.sh a partir do código abaixo
 # Validação dos dados
-# Lê o nome dos arquivos de entreda. O nome curto será o próprio nome da library
+# Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
 # Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
 #INDEX=0
 #for FILE in $(find ${IODIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
@@ -60,7 +60,7 @@ exit
 #fi
 
 
-FASTQCDIR="${RESULTSDIR}/FASTQC"
+
 TEMPDIR="${RESULTSDIR}/TEMP"
 TRIMMOMATICDIR="${RESULTSDIR}/TRIMMOMATIC"
 MUSKETDIR="${RESULTSDIR}/MUSKET"
@@ -77,7 +77,8 @@ THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
 # Quality control report
 # Foi utilizado para avaliar o sequenciamento e extrair alguns parâmtros para o Trimmomatic
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-function qc_bper () {
+function qc () {
+	
 	if [[ ! -d $FASTQCDIR ]]; then
 		mkdir -vp $FASTQCDIR
 		echo -e "Executando fastqc em ${IODIR}...\n"
