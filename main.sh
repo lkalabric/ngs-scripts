@@ -9,6 +9,20 @@
 
 # Requirements: fastqc
 
+# Funções disponíveis para execução do pipeline
+BIBLIOTECA="{HOME}/ngs-scripts/biblioteca.sh"
+
+if [[ ! -d "${BIBLIOTECA}" ]]; then
+	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	exit
+else
+	echo "Carregando a biblioteca..."
+	source $BIBLIOTECA
+fi
+
+# Parada para debug
+exit
+
 # Entrada de dados na linha do comando
 LIBNAME=$1
 WF=$2
