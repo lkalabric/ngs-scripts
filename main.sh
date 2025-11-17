@@ -10,11 +10,11 @@
 # Requirements: fastqc
 
 # Biblioteca de funções disponíveis para execução do pipeline
-BIBLIOTECA="./${HOME}/repos/ngs-scripts/biblioteca.sh"
+BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
-	source "${BIBLIOTECA}"
+	source "./${BIBLIOTECA}"
 	# Testando a função qc
 	qc
 else
