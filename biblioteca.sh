@@ -166,6 +166,83 @@ function install_conda_if_missing () {
 	exit 0
 }
 
+function install_conda () {
+	# =================================================================
+	# Script de Configuração do Ambiente Conda para Múltiplos Pacotes
+	# Este script cria um ambiente Conda se ele não existir e garante
+	# que uma lista de pacotes fornecida esteja instalada.
+	#
+	# Uso: ./install_packages_conda.sh <pacote1> <pacote2> ... <pacoteN>
+	# Exemplo: ./install_packages_conda.sh trimmomatic fastqc multiqc
+	# =================================================================
+	
+	# Nome do ambiente Conda desejado.
+	ENV_NAME="bioinfo_base_env"
+	
+	# Lista de pacotes a serem instalados (todos os argumentos passados ao script)
+	PACKAGES_TO_INSTALL=("$@")
+	
+	echo "=================================================="
+	echo "Iniciando a verificação do ambiente Conda: ${ENV_NAME}"
+	echo "Pacotes solicitados: ${PACKAGES_TO_INSTALL[*]}"
+	echo "=================================================="
+	
+	# 1. VERIFICAÇÃO DO ARGUMENTO: Garante que pelo menos um pacote foi fornecido.
+	if [ ${#PACKAGES_TO_INSTALL[@]} -eq 0 ]; then
+	    echo "ERRO: Por favor, forneça pelo menos um nome de pacote Conda para instalar."
+	    echo "Uso: $0 <pacote1> <pacote2> ..."
+	    exit 1
+	fi
+	
+	# 2. VERIFICAÇÃO DO CONDA: Garante que o comando 'conda' esteja acessível.
+	if ! command -v conda &> /dev/null; then
+	    echo "ERRO FATAL: O comando 'conda' não foi encontrado."
+	    echo "Certifique-se de que o Conda esteja instalado e configurado corretamente."
+	    exit 1
+	fi
+	
+	# 3. VERIFICAÇÃO DO AMBIENTE: Verifica se o ambiente já existe.
+	echo "Verificando a existência do ambiente..."
+	
+	# O 'grep -q' faz uma busca silenciosa e 'echo $?' retorna o código de saída (0=encontrado, 1=não encontrado).
+	conda info --envs | grep -q "^${ENV_NAME} "
+	ENV_EXISTS=$?
+	
+	INSTALLATION_COMMAND=""
+	
+	if [ ${ENV_EXISTS} -eq 0 ]; then
+	    echo "✅ Ambiente '${ENV_NAME}' encontrado."
+	    # 4. AMBIENTE EXISTE: Tenta instalar/atualizar os pacotes.
+	    echo "Garantindo que os pacotes estejam instalados/atualizados..."
+	    # Constrói o comando 'conda install' com a lista de pacotes.
+	    INSTALLATION_COMMAND="conda install -n \"${ENV_NAME}\" -y ${PACKAGES_TO_INSTALL[*]}"
+	else
+	    echo "❌ Ambiente '${ENV_NAME}' não encontrado. Criando ambiente e instalando pacotes..."
+	    # 5. AMBIENTE NÃO EXISTE: Cria o ambiente e instala os pacotes.
+	    # Constrói o comando 'conda create' com a lista de pacotes.
+	    INSTALLATION_COMMAND="conda create -n \"${ENV_NAME}\" -y ${PACKAGES_TO_INSTALL[*]}"
+	fi
+	
+	# 6. EXECUÇÃO DO COMANDO
+	echo "Comando a ser executado: ${INSTALLATION_COMMAND}"
+	eval "${INSTALLATION_COMMAND}"
+	
+	# 7. VERIFICAÇÃO DO RESULTADO
+	if [ $? -eq 0 ]; then
+	    echo "=================================================="
+	    echo "✅ Sucesso! Os pacotes foram instalados/atualizados no ambiente '${ENV_NAME}'."
+	    echo "Para ativar e usar, execute:"
+	    echo "conda activate ${ENV_NAME}"
+	    echo "=================================================="
+	    exit 0
+	else
+	    echo "=================================================="
+	    echo "ERRO: Falha na criação/instalação do ambiente ou dos pacotes."
+	    echo "Verifique se os nomes dos pacotes estão corretos e as mensagens de erro acima."
+	    echo "=================================================="
+	    exit 1
+	fi
+}
 
 #function input_validation () {
   # Criar um input_validation.sh a partir do código abaixo
