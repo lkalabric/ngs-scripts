@@ -16,7 +16,7 @@ if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
 	source "$BIBLIOTECA"
 	# Testando a função qc
-	qc
+	qc $INPUT_DIR $OUTPUT_DIR
 else
 	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
 	exit
