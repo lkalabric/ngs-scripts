@@ -16,7 +16,7 @@ if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
 	source $BIBLIOTECA
 else
-	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	echo "Biblioteca $BIBLIOTECA não disponível. Verifique com o desenvolvedor do seu pipeline!"
 	exit
 fi
 
