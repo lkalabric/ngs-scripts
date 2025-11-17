@@ -96,7 +96,7 @@ echo "Passos do WF$WF: ${WORKFLOWLIST[$INDICE]}"
 read -r -a STEPS <<< "${WORKFLOWLIST[$INDICE]}"
 for CALL_FUNC in ${STEPS[@]}; do
 	echo -e "\nExecutando o passo $CALL_FUNC... "
-	eval $CALL_FUNC
+	eval $CALL_FUNC $INPUT_DIR $OUTPUT_DIR
 done
 
 # Gera o log das análises
