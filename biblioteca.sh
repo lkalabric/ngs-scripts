@@ -210,6 +210,9 @@ function install_conda_packages_if_missing () {
 	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do
 	    # 3.1 Define o nome do ambiente baseado no nome do pacote
 	    ENV_NAME="${PACKAGE_NAME}_env"
+		echo $ENV_NAME
+		echo $PACKAGE_NAME
+		
 	    echo "Criando o ambiente ${ENV_NAME} para instalação do pacote ${PACKAGE_NAME}..."
 		
 	    # 3.2 Verifica se o ambiente já existe
@@ -217,14 +220,14 @@ function install_conda_packages_if_missing () {
 	    ENV_EXISTS=$?
 	    INSTALLATION_COMMAND=""
 	    if [ ${ENV_EXISTS} -eq 0 ]; then
-	        echo "   ✅ Ambiente '${ENV_NAME}' encontrado."
+	        echo "✅ Ambiente '${ENV_NAME}' encontrado."
 	        # Ambiente existe: Usa 'install' para garantir que o pacote esteja lá (e atualizado)
-	        echo "   -> Garantindo que '${PACKAGE_NAME}' esteja instalado/atualizado..."
+	        echo "Garantindo que '${PACKAGE_NAME}' esteja instalado/atualizado..."
 	        INSTALLATION_COMMAND="conda install -c bioconda -c conda-forge -c defaults -n \"${ENV_NAME}\" \"${PACKAGE_NAME}\" -y"
 	    else
-	        echo "   ❌ Ambiente '${ENV_NAME}' não encontrado."
+	        echo "❌ Ambiente '${ENV_NAME}' não encontrado."
 	        # Ambiente não existe: Usa 'create' para criar e instalar o pacote
-	        echo "   -> Criando novo ambiente e instalando '${PACKAGE_NAME}'..."
+	        echo "Criando novo ambiente e instalando '${PACKAGE_NAME}'..."
 	        INSTALLATION_COMMAND="conda create -n \"${ENV_NAME}\ -y; conda activate \"${ENV_NAME}\; conda install -c bioconda -c conda-forge -c defaults -n \"${ENV_NAME}\" \"${PACKAGE_NAME}\" -y"
 	    fi
 		
