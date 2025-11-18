@@ -274,7 +274,7 @@ function qc () {
 		INPUT_DIR=$1
 		OUTPUT_DIR="$2/fastqc"
 	echo "Input: ${INPUT_DIR}"
-	echo Output: ${OUTPUT_DIR}"
+	echo "Output: ${OUTPUT_DIR}"
 	# Parâmetros padrões e pseronalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	# Execução do comando propriamente
@@ -298,7 +298,7 @@ function trim () {
 		INPUT_DIR=$1
 		OUTPUT_DIR="$2/trimmomatic"
 	echo "Input: ${INPUT_DIR}"
-	echo Output: ${OUTPUT_DIR}"
+	echo "Output: ${OUTPUT_DIR}"
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
 	source activate trimmomatic_env
 	if [[ ! -d $OUTPUT_DIR ]]; then
