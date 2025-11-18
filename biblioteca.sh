@@ -16,11 +16,13 @@ function install_linux_packages_if_missing () {
 	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/linux_packages.param"
 	
 	# Verifica se o script foi chamado com um argumento
-	if [ -z "$1" ]; then
-	    echo "Uso: $0 <nome_do_comando>"
-	    echo "Exemplo: $0 htop"
-	    exit 1
-	fi
+	#if [ -z "$1" ]; then
+	#    echo "Uso: $0 <nome_do_comando>"
+	#    echo "Exemplo: $0 htop"
+	#    exit 1
+	#fi
+	
+	# Ler a lista de pacotes e instala
 	mapfile PACKAGE_LIST < "${LINUX_PACKAGES_FILENAME}"			
 	for PACKAGE_NAME in "${PACKAGE_LIST[@]}"; do 
 		apt-cache search ^${PACKAGE_NAME}$
