@@ -6,11 +6,13 @@ function install_linux_packages_if_missing () {
 	# =================================================================
 
 	# 1. UPDATE & UPGRADE YOUR LINUX DISTRO
-	# Pior to any installation, it is recommended to update and upgrade your Linux Distro
-		echo "Updating & upgrading installed packages before starting any new installation..."
-		sudo apt-get update
-		sudo apt list --upgradable
-		sudo apt-get upgrade  
+	# Before any installation, it is recommended to update and upgrade your Linux Distro
+	echo "====================================================="
+	echo "Atualizando o Linux para a instalação dos comandos..."
+	echo "====================================================="
+	sudo apt-get update
+	sudo apt list --upgradable
+	sudo apt-get upgrade  
 	
 	# 2. CARREGA A LISTA DE PACOTES A SEREM INSTALADOS
 	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/param/linux_packages.param"
@@ -18,7 +20,8 @@ function install_linux_packages_if_missing () {
 		echo "Carregando a lista de pacotes para instalação..."
 		# source "$LINUX_PACKAGES_FILENAME"
 	else
-		echo "Lista de pacotes não disponível. Verifique com o desenvolvedor do seu pipeline!"
+		echo "❌ ERRO: Lista de pacotes não disponível."
+		echo "Verifique com o desenvolvedor do seu pipeline!"
 		return
 	fi
 	
@@ -44,7 +47,7 @@ function install_linux_packages_if_missing () {
 	    PACKAGE_MANAGER="Zypper (openSUSE)"
 	    INSTALL_CMD="sudo zypper install -y "
 	else
-	    echo "ERRO: Não foi possível identificar um gerenciador de pacotes compatível (apt, dnf, yum, pacman, zypper)."
+	    echo "❌ ERRO: Não foi possível identificar um gerenciador de pacotes compatível (apt, dnf, yum, pacman, zypper)."
 	    echo "Tente instalar o comando manualmente."
 	    exit 1
 	fi
@@ -66,14 +69,15 @@ function install_linux_packages_if_missing () {
 				if [ $? -eq 0 ]; then
 				    echo "✅ Instalação do '${PACKAGE_NAME}' concluída com sucesso."
 				else
-				    echo "ERRO: A instalação falhou. Verifique se o nome do pacote está correto ou se você tem permissão sudo."
+				    echo "❌ ERRO: A instalação falhou."
+					echo "Verifique se o nome do pacote está correto ou se você tem permissão sudo."
 				fi
-				echo "`date` sudo apt-get install $PACKAGE_NAME" >> ${HOME}/logs/install_linuxpackages.log
-				else
+					echo "`date` sudo apt-get install $PACKAGE_NAME" >> ${HOME}/logs/install_linuxpackages.log
+			else
 				echo "You can install it anytime!"
 			fi
 		else
-			echo "$PACKAGE_NAME already installed in your Linux Distro!"
+			echo "✅ $PACKAGE_NAME already installed in your Linux Distro!"
 		fi
 	done
 }
