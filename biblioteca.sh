@@ -4,6 +4,16 @@ function install_linux_packages_if_missing () {
 	# Uso: Este script verifica se um comando está instalado. Se não estiver,
 	# tenta instalá-lo usando o gerenciador de pacotes correto.
 	# =================================================================
+
+	# Update & upgrade your Linux Distro
+	# Pior to any installation, it is recommended to update and upgrade your Linux Distro
+		echo "Updating & upgrading installed packages before starting any new installation..."
+		sudo apt-get update
+		sudo apt list --upgradable
+		sudo apt-get upgrade  
+	
+	# Carrega a lista de pacotes a serem instalados
+	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/linux_packages.param"
 	
 	# Verifica se o script foi chamado com um argumento
 	if [ -z "$1" ]; then
@@ -11,6 +21,25 @@ function install_linux_packages_if_missing () {
 	    echo "Exemplo: $0 htop"
 	    exit 1
 	fi
+	mapfile PACKAGE_LIST < "${LINUX_PACKAGES_FILENAME}"			
+	for PACKAGE_NAME in "${PACKAGE_LIST[@]}"; do 
+		apt-cache search ^${PACKAGE_NAME}$
+		if ! which $PACKAGE_NAME > /dev/null; then
+			echo -e "$PACKAGE_NAME is not installed! Install? (y/n) \c"
+			read -r
+			echo $REPLY
+			if [[ $REPLY = "y" ]]; then
+				sudo apt-get install ${PACKAGE_NAME}
+				echo "`date` sudo apt-get install $PACKAGE_NAME" >> ${HOME}/logs/install_linuxpackages.log
+				else
+				echo "You can install it anytime!"
+			fi
+		else
+			echo "$PACKAGE_NAME already installed in your Linux Distro!"
+		fi
+	done
+
+return
 	
 	# O nome do comando/pacote que o usuário deseja instalar
 	COMMAND_NAME="$1"
