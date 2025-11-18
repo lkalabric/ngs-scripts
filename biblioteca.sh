@@ -2,18 +2,18 @@ function install_linux_packages_if_missing () {
 	# =================================================================
 	# Script: Instalação Condicional de Comandos Ausentes
 	# Uso: Este script verifica se um comando está instalado. Se não estiver,
-	# tenta instalá-lo usando o gerenciador de pacotes correto.
+	# tenta instalá-lo usando o gerenciador de pacotes adequado.
 	# =================================================================
 
-	# Update & upgrade your Linux Distro
+	# 1. UPDATE & UPGRADE YOUR LINUX DISTRO
 	# Pior to any installation, it is recommended to update and upgrade your Linux Distro
 		echo "Updating & upgrading installed packages before starting any new installation..."
 		sudo apt-get update
 		sudo apt list --upgradable
 		sudo apt-get upgrade  
 	
-	# Carrega a lista de pacotes a serem instalados
-	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/param/linux_packages.param"
+	# 2. CARREGA A LISTA DE PACOTES A SEREM INSTALADOS
+	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/param/linux_commands.param"
 	if [[ -f "$LINUX_PACKAGES_FILENAME" ]]; then
 		echo "Carregando a lista de pacotes para instalação..."
 		# source "$LINUX_PACKAGES_FILENAME"
@@ -22,14 +22,37 @@ function install_linux_packages_if_missing () {
 		return
 	fi
 	
-	# Verifica se o script foi chamado com um argumento
-	#if [ -z "$1" ]; then
-	#    echo "Uso: $0 <nome_do_comando>"
-	#    echo "Exemplo: $0 htop"
-	#    exit 1
-	#fi
+	# 3. DETECÇÃO DO GERENCIADOR DE PACOTES
+	PACKAGE_MANAGER=""
+	INSTALL_CMD=""
+	if command -v apt &> /dev/null; then
+	    PACKAGE_MANAGER="APT (Debian/Ubuntu)"
+	    INSTALL_CMD="sudo apt update && sudo apt install -y "
+	# Detecta distros baseadas em Fedora/CentOS/RHEL (DNF/YUM)
+	elif command -v dnf &> /dev/null; then
+	    PACKAGE_MANAGER="DNF (Fedora/RHEL 8+)"
+	    INSTALL_CMD="sudo dnf install -y "
+	elif command -v yum &> /dev/null; then
+	    PACKAGE_MANAGER="YUM (CentOS/RHEL 7-)"
+	    INSTALL_CMD="sudo yum install -y "
+	# Detecta distros baseadas em Arch Linux (Pacman)
+	elif command -v pacman &> /dev/null; then
+	    PACKAGE_MANAGER="Pacman (Arch Linux)"
+	    INSTALL_CMD="sudo pacman -S --noconfirm "
+	# Detecta distros baseadas em openSUSE (Zypper)
+	elif command -v zypper &> /dev/null; then
+	    PACKAGE_MANAGER="Zypper (openSUSE)"
+	    INSTALL_CMD="sudo zypper install -y "
+	else
+	    echo "ERRO: Não foi possível identificar um gerenciador de pacotes compatível (apt, dnf, yum, pacman, zypper)."
+	    echo "Tente instalar o comando manualmente."
+	    exit 1
+	fi
 	
-	# Ler a lista de pacotes e instala
+	# 4. EXECUÇÃO DA INSTALAÇÃO
+	echo "Gerenciador de Pacotes Detectado: ${PACKAGE_MANAGER}"
+		
+	# 5. LER A LISTA DE COMANDOS E INSTALA, SE AUSENTE
 	mapfile PACKAGE_LIST < "${LINUX_PACKAGES_FILENAME}"			
 	for PACKAGE_NAME in "${PACKAGE_LIST[@]}"; do 
 		apt-cache search ^${PACKAGE_NAME}$
@@ -38,7 +61,13 @@ function install_linux_packages_if_missing () {
 			read -r
 			echo $REPLY
 			if [[ $REPLY = "y" ]]; then
-				sudo apt-get install ${PACKAGE_NAME}
+				eval "${INSTALL_CMD} ${PACKAGE_NAME}" # sudo apt-get install ${PACKAGE_NAME}
+				# Usa o código de saída do comando 'eval' ($?)
+				if [ $? -eq 0 ]; then
+				    echo "✅ Instalação do '${PACKAGE_NAME}' concluída com sucesso."
+				else
+				    echo "ERRO: A instalação falhou. Verifique se o nome do pacote está correto ou se você tem permissão sudo."
+				fi
 				echo "`date` sudo apt-get install $PACKAGE_NAME" >> ${HOME}/logs/install_linuxpackages.log
 				else
 				echo "You can install it anytime!"
@@ -47,76 +76,6 @@ function install_linux_packages_if_missing () {
 			echo "$PACKAGE_NAME already installed in your Linux Distro!"
 		fi
 	done
-
-return
-	
-	# O nome do comando/pacote que o usuário deseja instalar
-	COMMAND_NAME="$1"
-	
-	echo "=================================================="
-	echo "Verificando o comando: ${COMMAND_NAME}"
-	echo "=================================================="
-	
-	# 1. VERIFICAÇÃO INICIAL: Usa 'command -v' (ou 'which') para verificar se o comando já existe.
-	if command -v "${COMMAND_NAME}" &> /dev/null; then
-	    echo "✅ Comando '${COMMAND_NAME}' já está instalado."
-	    # echo "Localização: $(command -v "${COMMAND_NAME}")"
-	    # exit 0
-		return
-	fi
-	
-	# 2. INSTALAÇÃO CONDICIONAL (&&): Se o comando não for encontrado, o script continua.
-	echo "❌ Comando '${COMMAND_NAME}' não encontrado. Iniciando a instalação..."
-	
-	# 3. DETECÇÃO DO GERENCIADOR DE PACOTES
-	PACKAGE_MANAGER=""
-	INSTALL_CMD=""
-	
-	# Detecta distros baseadas em Debian/Ubuntu (APT)
-	if command -v apt &> /dev/null; then
-	    PACKAGE_MANAGER="APT (Debian/Ubuntu)"
-	    INSTALL_CMD="sudo apt update && sudo apt install -y ${COMMAND_NAME}"
-	
-	# Detecta distros baseadas em Fedora/CentOS/RHEL (DNF/YUM)
-	elif command -v dnf &> /dev/null; then
-	    PACKAGE_MANAGER="DNF (Fedora/RHEL 8+)"
-	    INSTALL_CMD="sudo dnf install -y ${COMMAND_NAME}"
-	elif command -v yum &> /dev/null; then
-	    PACKAGE_MANAGER="YUM (CentOS/RHEL 7-)"
-	    INSTALL_CMD="sudo yum install -y ${COMMAND_NAME}"
-	
-	# Detecta distros baseadas em Arch Linux (Pacman)
-	elif command -v pacman &> /dev/null; then
-	    PACKAGE_MANAGER="Pacman (Arch Linux)"
-	    INSTALL_CMD="sudo pacman -S --noconfirm ${COMMAND_NAME}"
-	
-	# Detecta distros baseadas em openSUSE (Zypper)
-	elif command -v zypper &> /dev/null; then
-	    PACKAGE_MANAGER="Zypper (openSUSE)"
-	    INSTALL_CMD="sudo zypper install -y ${COMMAND_NAME}"
-	
-	else
-	    echo "ERRO: Não foi possível identificar um gerenciador de pacotes compatível (apt, dnf, yum, pacman, zypper)."
-	    echo "Tente instalar o comando manualmente."
-	    exit 1
-	fi
-	
-	# 4. EXECUÇÃO DA INSTALAÇÃO
-	echo "=================================================="
-	echo "Gerenciador de Pacotes Detectado: ${PACKAGE_MANAGER}"
-	echo "Comando a ser executado: ${INSTALL_CMD}"
-	echo "=================================================="
-	
-	# O comando de instalação é executado. Ele pode incluir o operador && internamente.
-	eval "${INSTALL_CMD}"
-	
-	# 5. VERIFICAÇÃO FINAL: Se a instalação falhar, exibe uma mensagem.
-	# Usa o código de saída do comando 'eval' ($?)
-	if [ $? -eq 0 ]; then
-	    echo "✅ Instalação do '${COMMAND_NAME}' concluída com sucesso."
-	else
-	    echo "ERRO: A instalação falhou. Verifique se o nome do pacote está correto ou se você tem permissão sudo."
-	fi
 }
 
 function install_conda_if_missing () {
