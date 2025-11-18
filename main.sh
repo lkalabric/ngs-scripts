@@ -23,7 +23,7 @@ fi
 	# Instalação do conda, se necessário
 		install_conda_if_missing
 	# Instalação dos ambientes e pacotes (conda_packages.param)
-		install_conda_packages_if_missing "trimmomatic multiqc"
+		install_conda_packages_if_missing
 		
 # Argumentos passados na linha do comando para o script main.sh
 LIBNAME=$1 	# Nome da biblioteca de dados
