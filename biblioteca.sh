@@ -210,7 +210,6 @@ function install_conda_packages_if_missing () {
 	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do
 	    # 3.1 Define o nome do ambiente baseado no nome do pacote
 	    ENV_NAME="${PACKAGE_NAME}_env"
-	    echo ""
 	    echo "Criando o ambiente ${ENV_NAME} para instalação do pacote ${PACKAGE_NAME}..."
 		
 	    # 3.2 Verifica se o ambiente já existe
@@ -232,12 +231,13 @@ function install_conda_packages_if_missing () {
 	    # 3.3 Execução do comando
 	    # echo "   [DEBUG] Comando: ${INSTALLATION_COMMAND}"
 	    eval "${INSTALLATION_COMMAND}"
-	    # Verifica o código de saída da última execução (conda create/install)
+	    
+		# 3.4 Verifica o código de saída da última execução (conda create/install)
 	    if [ $? -eq 0 ]; then
-	        echo "   ✅ Instalação/Atualização de '${PACKAGE_NAME}' em '${ENV_NAME}' concluída com sucesso."
+	        echo "✅ Instalação/Atualização de '${PACKAGE_NAME}' em '${ENV_NAME}' concluída com sucesso."
 	        echo "   Instrução: conda activate ${ENV_NAME}"
 	    else
-	        echo "   ❌ ERRO: Falha na instalação de '${PACKAGE_NAME}'. Verifique as mensagens de erro."
+	        echo "❌ ERRO: Falha na instalação de '${PACKAGE_NAME}'. Verifique as mensagens de erro."
 	    fi
 	done
 }
