@@ -56,8 +56,8 @@ function install_linux_packages_if_missing () {
 	echo "Gerenciador de Pacotes Detectado: ${PACKAGE_MANAGER}"
 		
 	# 5. LER A LISTA DE COMANDOS E INSTALA, SE AUSENTE
-	mapfile PACKAGE_LIST < "${LINUX_PACKAGES_FILENAME}"			
-	for PACKAGE_NAME in "${PACKAGE_LIST[@]}"; do 
+	mapfile PACKAGES_TO_INSTALL < "${LINUX_PACKAGES_FILENAME}"			
+	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do 
 		apt-cache search ^${PACKAGE_NAME}$
 		if ! which $PACKAGE_NAME > /dev/null; then
 			echo -e "❌ $PACKAGE_NAME is not installed! Install? (y/n) \c"
@@ -94,10 +94,10 @@ function install_conda_if_missing () {
 	CONDA_DOWNLOAD_URL="https://repo.anaconda.com/miniconda/${CONDA_INSTALLER}"
 	CONDA_INSTALL_DIR="$HOME/miniconda3"
 	
-	echo "=================================================="
+	echo "===================================="
 	echo "Verificando a instalação do Conda..."
-	echo "=================================================="
-	# 1. Função para verificar a existência do comando 'conda'
+	echo "===================================="
+	# 1. FUNÇÃO PARA VERIFICAR A EXISTÊNCIA DO COMANDO 'conda'
 	# O 'command -v' verifica se o comando está no PATH.
 	if command -v conda &> /dev/null; then
 	    echo "✅ Conda já está instalado e disponível no PATH."
@@ -107,12 +107,13 @@ function install_conda_if_missing () {
 		return
 	fi
 	
-	# 2. Se o Conda não for encontrado, inicia a instalação
-	echo "❌ Conda não encontrado. Iniciando a instalação do Miniconda..."
+	# 2. SE O CONDA NÃO FOR ENCONTRADO, INICIA A INSTALAÇÃO
+	echo "❌ ERRO: Conda não encontrado."
+	echo "Iniciando a instalação do Miniconda..."
 	
 	# 2.1. Verifica a existência do 'curl' ou 'wget' para download
 	if ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
-	    echo "ERRO FATAL: 'curl' ou 'wget' não estão instalados."
+	    echo "❌ ERRO FATAL: 'curl' ou 'wget' não estão instalados."
 	    echo "Não é possível baixar o instalador. Instale um deles e tente novamente."
 	    exit 1
 	fi
@@ -152,7 +153,7 @@ function install_conda_if_missing () {
 	echo "Removendo o arquivo do instalador: ${CONDA_INSTALLER}"
 	rm -f "$CONDA_INSTALLER"
 	
-	# 3. Inicialização e Configuração
+	# 3. INICIALIZAÇÃO E CONFIGURAÇÃO
 	echo "Configurando o ambiente Shell para o Conda (conda init)..."
 	# O comando 'init' adiciona as configurações necessárias ao seu shell profile (~/.bashrc)
 	"$CONDA_INSTALL_DIR"/bin/conda init
@@ -164,7 +165,7 @@ function install_conda_if_missing () {
 	echo "=================================================="
 	
 	# O script de instalação Bash deve terminar com um status de sucesso
-	exit 0
+	return
 }
 
 function install_conda_packages_if_missing () {
@@ -178,41 +179,44 @@ function install_conda_packages_if_missing () {
 	# =================================================================
 	
 	# 1. VERIFICAÇÃO INICIAL: Garante que pelo menos um pacote foi fornecido.
-	PACKAGES_TO_INSTALL=("$@")
-	
-	if [ ${#PACKAGES_TO_INSTALL[@]} -eq 0 ]; then
-	    echo "ERRO: Por favor, forneça pelo menos um nome de pacote Conda para instalar."
-	    echo "Uso: $0 <pacote1> <pacote2> ..."
-	    exit 1
+	CONDA_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/param/conda_packages.param"
+	if [[ -f "$CONDA_PACKAGES_FILENAME" ]]; then
+		echo "Carregando a lista de pacotes para instalação..."
+	else
+		echo "❌ ERRO: Lista de pacotes não disponível."
+		echo "Verifique com o desenvolvedor do seu pipeline!"
+		return
 	fi
+		
+	#PACKAGES_TO_INSTALL=("$@")
+	#if [ ${#PACKAGES_TO_INSTALL[@]} -eq 0 ]; then
+	#    echo "ERRO: Por favor, forneça pelo menos um nome de pacote Conda para instalar."
+	#    echo "Uso: $0 <pacote1> <pacote2> ..."
+	#    exit 1
+	#fi
 	
 	# 2. VERIFICAÇÃO DO CONDA: Garante que o comando 'conda' esteja acessível.
 	if ! command -v conda &> /dev/null; then
-	    echo "ERRO FATAL: O comando 'conda' não foi encontrado."
+	    echo "❌ ERRO FATAL: O comando 'conda' não foi encontrado."
 	    echo "Certifique-se de que o Conda esteja instalado e configurado corretamente."
 	    exit 1
 	fi
 	
-	echo "=================================================="
-	echo "Iniciando a instalação de pacotes isolados."
-	echo "Pacotes solicitados: ${PACKAGES_TO_INSTALL[*]}"
-	echo "=================================================="
-	
+	echo "============================================================="
+	echo "Iniciando a criação dos ambientes e instalação dos pacotes..."
+	echo "============================================================="
 	# 3. LOOP PRINCIPAL: Itera sobre cada pacote fornecido.
+	mapfile PACKAGES_TO_INSTALL < "${CONDA_PACKAGES_FILENAME}"	
 	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do
-	
-	    # Define o nome do ambiente baseado no nome do pacote
+	    # 3.1 Define o nome do ambiente baseado no nome do pacote
 	    ENV_NAME="${PACKAGE_NAME}_env"
-	    
 	    echo ""
-	    echo "--- Processando Pacote: ${PACKAGE_NAME} (Ambiente: ${ENV_NAME}) ---"
-	
-	    # Verifica se o ambiente já existe
+	    echo "Criando o ambiente ${ENV_NAME} para instalação do pacote ${PACKAGE_NAME}..."
+		
+	    # 3.2 Verifica se o ambiente já existe
 	    conda info --envs | grep -q "^${ENV_NAME} "
 	    ENV_EXISTS=$?
-	
 	    INSTALLATION_COMMAND=""
-	
 	    if [ ${ENV_EXISTS} -eq 0 ]; then
 	        echo "   ✅ Ambiente '${ENV_NAME}' encontrado."
 	        # Ambiente existe: Usa 'install' para garantir que o pacote esteja lá (e atualizado)
@@ -224,11 +228,10 @@ function install_conda_packages_if_missing () {
 	        echo "   -> Criando novo ambiente e instalando '${PACKAGE_NAME}'..."
 	        INSTALLATION_COMMAND="conda create -n \"${ENV_NAME}\" \"${PACKAGE_NAME}\" -y"
 	    fi
-	
-	    # Execução do comando
+		
+	    # 3.3 Execução do comando
 	    # echo "   [DEBUG] Comando: ${INSTALLATION_COMMAND}"
 	    eval "${INSTALLATION_COMMAND}"
-	    
 	    # Verifica o código de saída da última execução (conda create/install)
 	    if [ $? -eq 0 ]; then
 	        echo "   ✅ Instalação/Atualização de '${PACKAGE_NAME}' em '${ENV_NAME}' concluída com sucesso."
@@ -236,12 +239,7 @@ function install_conda_packages_if_missing () {
 	    else
 	        echo "   ❌ ERRO: Falha na instalação de '${PACKAGE_NAME}'. Verifique as mensagens de erro."
 	    fi
-	
 	done
-	
-	echo "=================================================="
-	echo "Fim da instalação de todos os pacotes solicitados."
-	echo "=================================================="
 }
 
 #function input_validation () {
