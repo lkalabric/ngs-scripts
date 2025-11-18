@@ -252,7 +252,7 @@ function install_conda_packages_if_missing () {
   # Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
   # Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
   #INDEX=0
-  #for FILE in $(find ${IODIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
+  #for FILE in $(find ${INPUT_DIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
   #	FULLNAME[$INDEX]=${FILE}
   #	((INDEX++))
   #done
@@ -314,7 +314,7 @@ function trim () {
 		echo "Dados analisados previamente..."
 	fi
   	FLAG=1
-	IODIR=$OUTPUT_DIR              
+	INPUT_DIR=$OUTPUT_DIR              
 }
 
 # Correção de erros
@@ -327,11 +327,11 @@ function musket () {
 	OUTPUT_DIR="$2/musket"
 	if [[ ! -d $MUSKETDIR ]]; then
 		mkdir -vp $MUSKETDIR
-		echo -e "\nExecutando musket em ${IODIR}...\n"
+		echo -e "\nExecutando musket em ${INPUT_DIR}...\n"
 		
 		# New code
 		musket -k ${KMER} 536870912 -p ${THREADS} \
-			${IODIR}/${LIBNAME}*.fastq \
+			${INPUT_DIR}/${LIBNAME}*.fastq \
 			-omulti ${MUSKETDIR}/${LIBNAME} -inorder -lowercase
 		mv ${MUSKETDIR}/${LIBNAME}.0 ${MUSKETDIR}/${LIBNAME}_R1.fastq
 		mv ${MUSKETDIR}/${LIBNAME}.1 ${MUSKETDIR}/${LIBNAME}_R1R2u.fastq
@@ -339,14 +339,14 @@ function musket () {
 				
 		# Original code (somente paired-end data)
 		# musket -k ${KMER} 536870912 -p ${THREADS} \
-		#	${IODIR}/${LIBNAME}_R1.fastq ${IODIR}/${LIBNAME}_R2.fastq \
+		#	${INPUT_DIR}/${LIBNAME}_R1.fastq ${INPUT_DIR}/${LIBNAME}_R2.fastq \
 		#	-omulti ${MUSKETDIR}/${LIBNAME} -inorder -lowercase
 		# mv ${MUSKETDIR}/${LIBNAME}.0 ${MUSKETDIR}/${LIBNAME}_R1.fastq
 		# mv ${MUSKETDIR}/${LIBNAME}.1 ${MUSKETDIR}/${LIBNAME}_R2.fastq
 	else		
 		echo "Dados analisados previamente..."
 	fi
-  	IODIR=$MUSKETDIR              
+  	INPUT_DIR=$MUSKETDIR              
 }
 
 # Concatenar as reads forward e reverse para extender as reads
@@ -354,8 +354,8 @@ function musket () {
 function flash_bper () {
 	if [[ ! -d $FLASHDIR ]]; then
 		mkdir -vp $FLASHDIR
-		echo -e "\nExecutando flash em ${IODIR}...\n"
-		flash ${IODIR}/${LIBNAME}_R1.fastq ${IODIR}/${LIBNAME}_R2.fastq \
+		echo -e "\nExecutando flash em ${INPUT_DIR}...\n"
+		flash ${INPUT_DIR}/${LIBNAME}_R1.fastq ${INPUT_DIR}/${LIBNAME}_R2.fastq \
 			-t ${THREADS} -M 100 -o ${LIBNAME} -d ${FLASHDIR} 2>&1 | tee ${FLASHDIR}/${LIBNAME}_flash.log	
 		mv ${FLASHDIR}/${LIBNAME}.extendedFrags.fastq ${FLASHDIR}/${LIBNAME}_R1R2e.fastq
 		mv ${FLASHDIR}/${LIBNAME}.notCombined_1.fastq ${FLASHDIR}/${LIBNAME}_R1nc.fastq
@@ -365,7 +365,7 @@ function flash_bper () {
 		echo "Dados analisados previamente..."
 	fi
   	FLAG=2
-	IODIR=$FLASHDIR              
+	INPUT_DIR=$FLASHDIR              
 }
 
 # Normalização digital (remove a maioria das sequencias redundantes)
@@ -373,15 +373,15 @@ function flash_bper () {
 function khmer_bper () {
 	if [[ ! -d $KHMERDIR ]]; then
 		mkdir -vp $KHMERDIR
-		echo -e "\nExecutando khmer em ${IODIR}...\n"
-		khmer normalize-by-median -M 10000000 -u ${IODIR}/${LIBNAME}*.fastq \
+		echo -e "\nExecutando khmer em ${INPUT_DIR}...\n"
+		khmer normalize-by-median -M 10000000 -u ${INPUT_DIR}/${LIBNAME}*.fastq \
 			-s ${KHMERDIR}/${LIBNAME}_graph \
 			-R ${KHMERDIR}/${LIBNAME}_report.txt --report-frequency 100000 \
 			-o ${KHMERDIR}/${LIBNAME}.fastq
 	else
 		echo "Dados analisados previamente..."
 	fi
-  	IODIR=$KHMERDIR              
+  	INPUT_DIR=$KHMERDIR              
 }
 
 # Assemble reads de novo
@@ -389,52 +389,52 @@ function khmer_bper () {
 function spades_bper () {
 	if [[ ! -d $SPADESDIR ]]; then
 		mkdir -vp $SPADESDIR
-		echo -e "\nExecutando spades em ${IODIR}...\n"
+		echo -e "\nExecutando spades em ${INPUT_DIR}...\n"
 		
 		# New
 		case $FLAG in
 		0) 
 			echo -e "\nFlag para controle de fluxo da montagem pelo Spades: $FLAG\n"
-			spades.py -1 ${IODIR}/*R1*.fastq* -2 ${IODIR}/*R2*.fastq* \
+			spades.py -1 ${INPUT_DIR}/*R1*.fastq* -2 ${INPUT_DIR}/*R2*.fastq* \
 				--only-assembler --careful -o ${SPADESDIR}
 			;;
 		1) 
 			echo -e "\nFlag para controle de fluxo da montagem pelo Spades: $FLAG\n"
-			spades.py -1 ${IODIR}/*R1.fastq* -2 ${IODIR}/*R2.fastq* \
-				-s ${IODIR}/*R1R2u.fastq* \
+			spades.py -1 ${INPUT_DIR}/*R1.fastq* -2 ${INPUT_DIR}/*R2.fastq* \
+				-s ${INPUT_DIR}/*R1R2u.fastq* \
 				--only-assembler --careful -o ${SPADESDIR}
 			;;
 		2)
 			echo -e "\nFlag para controle de fluxo da montagem pelo Spades: $FLAG\n"
-			spades.py -s ${IODIR}/*.fastq \
+			spades.py -s ${INPUT_DIR}/*.fastq \
 				--only-assembler --careful -o ${SPADESDIR}
 			;;
 		*)
 			echo -e "Parece que houve algum erro e seus dados não foram montados!\n" 
 			exit 7
-			if [[ $(ls ${IODIR}/*.fastq* | wc -l) -eq 2 ]]; then
-				spades.py -1 ${IODIR}/*R1*.fastq* -2 ${IODIR}/*R2*.fastq* \
+			if [[ $(ls ${INPUT_DIR}/*.fastq* | wc -l) -eq 2 ]]; then
+				spades.py -1 ${INPUT_DIR}/*R1*.fastq* -2 ${INPUT_DIR}/*R2*.fastq* \
 					--only-assembler --careful -o ${SPADESDIR}
 			else
-				spades.py -1 ${IODIR}/*R1.fastq* -2 ${IODIR}/*R2.fastq* \
-					-s ${IODIR}/*R1R2u.fastq* \
+				spades.py -1 ${INPUT_DIR}/*R1.fastq* -2 ${INPUT_DIR}/*R2.fastq* \
+					-s ${INPUT_DIR}/*R1R2u.fastq* \
 					--only-assembler --careful -o ${SPADESDIR}
 			fi
 			;;
 		esac
 		# Original 
-		# Verifica o número de arquivos em ${IODIR}
-		#if [[ $(ls ${IODIR}/*.fastq* | wc -l) -eq 1 ]]; then
-		#	spades --12 ${IODIR}/${LIBNAME}.fastq \
+		# Verifica o número de arquivos em ${INPUT_DIR}
+		#if [[ $(ls ${INPUT_DIR}/*.fastq* | wc -l) -eq 1 ]]; then
+		#	spades --12 ${INPUT_DIR}/${LIBNAME}.fastq \
 		#		--only-assembler --careful -o ${SPADESDIR}		
 		#else
-		#	spades -1 ${IODIR}/*R1*.fastq* -2 ${IODIR}/*R2*.fastq* \
+		#	spades -1 ${INPUT_DIR}/*R1*.fastq* -2 ${INPUT_DIR}/*R2*.fastq* \
 		#	--only-assembler --careful -o ${SPADESDIR}
 		#fi
 	else
 		echo "Dados analisados previamente..."
 	fi
- 		IODIR=$SPADESDIR              
+ 		INPUT_DIR=$SPADESDIR              
 }
 
 # Assemble contigs end-to-end
@@ -442,12 +442,12 @@ function spades_bper () {
 function spades2_bper () {
 	if [[ ! -d $SPADES2DIR ]]; then
 		mkdir -vp $SPADES2DIR
-		echo -e "\nExecutando spades para montagem as contigs end-to-end em ${IODIR}...\n"
-		# Verifica o número de arquivos em ${IODIR}
-		spades.py -s ${IODIR}/contigs.fasta \
+		echo -e "\nExecutando spades para montagem as contigs end-to-end em ${INPUT_DIR}...\n"
+		# Verifica o número de arquivos em ${INPUT_DIR}
+		spades.py -s ${INPUT_DIR}/contigs.fasta \
 				--only-assembler --careful -o ${SPADES2DIR}
 	else
 		echo "Dados analisados previamente..."
 	fi
- 		IODIR=$SPADES2DIR              
+ 		INPUT_DIR=$SPADES2DIR              
 }
