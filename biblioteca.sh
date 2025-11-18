@@ -60,7 +60,7 @@ function install_linux_packages_if_missing () {
 	for PACKAGE_NAME in "${PACKAGE_LIST[@]}"; do 
 		apt-cache search ^${PACKAGE_NAME}$
 		if ! which $PACKAGE_NAME > /dev/null; then
-			echo -e "$PACKAGE_NAME is not installed! Install? (y/n) \c"
+			echo -e "❌ $PACKAGE_NAME is not installed! Install? (y/n) \c"
 			read -r
 			echo $REPLY
 			if [[ $REPLY = "y" ]]; then
