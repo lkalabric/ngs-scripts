@@ -209,8 +209,8 @@ function install_conda_packages_if_missing () {
 	mapfile PACKAGES_TO_INSTALL < "${CONDA_PACKAGES_FILENAME}"	
 	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do
 	    # 3.1 Define o nome do ambiente baseado no nome do pacote
-	    #ENV_NAME="${PACKAGE_NAME// /}_env"
-		ENV_NAME=$PACKAGE_NAME
+	    ENV_NAME="${PACKAGE_NAME//$'\n'/}_env"
+		#ENV_NAME=$PACKAGE_NAME
 		echo $ENV_NAME
 		echo $PACKAGE_NAME
 		
