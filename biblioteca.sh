@@ -299,6 +299,7 @@ function trim () {
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
 		OUTPUT_DIR="$2/trimmomatic"
+		TEMP_DIR="$OUTPUT_DIR/temp"
 	echo "Input: ${INPUT_DIR}"
 	echo "Output: ${OUTPUT_DIR}"
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
