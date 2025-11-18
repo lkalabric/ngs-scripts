@@ -19,7 +19,7 @@ fi
 
 # Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
 	# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
-		install_linux_pakages_if_missing
+		install_linux_packages_if_missing
 	# Instalação do conda, se necessário
 		install_conda_if_missing
 	# Instalação dos ambientes e pacotes (conda_packages.param)
