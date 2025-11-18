@@ -56,7 +56,7 @@ function install_linux_packages_if_missing () {
 	echo "Gerenciador de Pacotes Detectado: ${PACKAGE_MANAGER}"
 		
 	# 5. LER A LISTA DE COMANDOS E INSTALA, SE AUSENTE
-	mapfile PACKAGES_TO_INSTALL < "${LINUX_PACKAGES_FILENAME}"			
+	mapfile -t PACKAGES_TO_INSTALL < "${LINUX_PACKAGES_FILENAME}"			
 	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do 
 		apt-cache search ^${PACKAGE_NAME}$
 		if ! which $PACKAGE_NAME > /dev/null; then
@@ -206,8 +206,8 @@ function install_conda_packages_if_missing () {
 	echo "Iniciando a criação dos ambientes e instalação dos pacotes..."
 	echo "============================================================="
 	# 3. LOOP PRINCIPAL: Itera sobre cada pacote fornecido.
-	mapfile PACKAGES_TO_INSTALL < "${CONDA_PACKAGES_FILENAME}"	
-	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]//$'\n'/}"; do
+	mapfile -t PACKAGES_TO_INSTALL < "${CONDA_PACKAGES_FILENAME}"	
+	for PACKAGE_NAME in "${PACKAGES_TO_INSTALL[@]}"; do
 	    # 3.1 Define o nome do ambiente baseado no nome do pacote
 	    ENV_NAME="${PACKAGE_NAME}_env"
 		#ENV_NAME=$PACKAGE_NAME
