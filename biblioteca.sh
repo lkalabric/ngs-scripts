@@ -168,7 +168,7 @@ function install_conda_if_missing () {
 	return
 }
 
-function install_conda_packages_if_missing () {
+function conda_packages () {
 	# =================================================================
 	# Script de Configuração de Ambientes Conda Isolados
 	# Este script cria um ambiente Conda dedicado para CADA pacote
