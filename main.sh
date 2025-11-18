@@ -21,7 +21,7 @@ fi
 echo -e "Deseja (Re-)Configurar os pacotes? (y/n) \c"
 read -r
 echo $REPLY
-if [[ $REPLY = "y" ]]; then
+if [[ $REPLY =~ ^[Yy]$ ]]; then
 	# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
 		install_linux_packages_if_missing
 	# Instalação do conda, se necessário
