@@ -23,8 +23,7 @@ fi
 	# Instalação do conda, se necessário
 		install_conda_if_missing
 	# Instalação dos ambientes e pacotes (conda_packages.param)
-		conda_packages
-		#install_conda_packages_if_missing
+		install_conda_packages_if_missing
 
 # Parada para debug
 exit
