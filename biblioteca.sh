@@ -14,6 +14,13 @@ function install_linux_packages_if_missing () {
 	
 	# Carrega a lista de pacotes a serem instalados
 	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/linux_packages.param"
+	if [[ -f "$LINUX_PACKAGES_FILENAME" ]]; then
+		echo "Carregando a lista de pacotes para instalação..."
+		# source "$LINUX_PACKAGES_FILENAME"
+	else
+		echo "Lista de pacotes não disponível. Verifique com o desenvolvedor do seu pipeline!"
+		return
+	fi
 	
 	# Verifica se o script foi chamado com um argumento
 	#if [ -z "$1" ]; then
