@@ -1,7 +1,7 @@
-fastqc
-multiqc
-minimap
-cutadapt
 busco
 cd-hit
+cutadapt
+diamond-aligner
+fastqc
+minimap
 multiqc
