@@ -1,9 +1,9 @@
-nanofilt
-trimmomatic
 crossmap
 cutadapt
+diamond
 hmmer
 iqtree
 nanofilt
 soapdenovo2
+trimmomatic
 velvet
