@@ -13,7 +13,7 @@ function install_linux_packages_if_missing () {
 		sudo apt-get upgrade  
 	
 	# Carrega a lista de pacotes a serem instalados
-	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/linux_packages.param"
+	LINUX_PACKAGES_FILENAME="$HOME/repos/ngs-scripts/param/linux_packages.param"
 	if [[ -f "$LINUX_PACKAGES_FILENAME" ]]; then
 		echo "Carregando a lista de pacotes para instalação..."
 		# source "$LINUX_PACKAGES_FILENAME"
