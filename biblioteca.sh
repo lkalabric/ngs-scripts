@@ -275,6 +275,8 @@ function qc () {
 		OUTPUT_DIR="$2/fastqc"
 	echo "Input: ${INPUT_DIR}"
 	echo "Output: ${OUTPUT_DIR}"
+	# Copia os arquivos brutos para iniciar o workflow
+	# cp "${INPUT_DIR}/*" "${OUTPUT_DIR}"
 	# Parâmetros padrões e pseronalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	# Execução do comando propriamente
@@ -283,7 +285,7 @@ function qc () {
 		mkdir -vp "$OUTPUT_DIR"
 		echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
 		fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/*.fastq.gz
-		INPUT_DIR=$OUTPUT_DIR
+		# INPUT_DIR=$OUTPUT_DIR
 	else
 		echo "Dados analisados previamente..."
 	fi
