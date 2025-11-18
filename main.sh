@@ -7,7 +7,7 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
-# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do pipeline
+# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do workflow de bioinformática para análise de dados ngs
 BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
@@ -18,11 +18,11 @@ else
 fi
 
 # Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
-	# Instalação dos softwares Linux requeridos, se necessário
-		install_linux_pakages_if_missing "fastqc"
-	# Instalação do conda, se necessário:
+	# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
+		install_linux_pakages_if_missing
+	# Instalação do conda, se necessário
 		install_conda_if_missing
-	# Instalação dos ambientes e pacotes
+	# Instalação dos ambientes e pacotes (conda_packages.param)
 		install_conda_packages_if_missing "trimmomatic multiqc"
 		
 # Argumentos passados na linha do comando para o script main.sh
