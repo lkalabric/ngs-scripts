@@ -50,16 +50,16 @@ fi
 
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-OUTPUT_DIR="${HOME}/results/${LIBNAME}/wf${WF}"
-if [[ ! -d "$OUTPUT_DIR" ]]; then
-	mkdir -vp $OUTPUT_DIR
+RESULTS_DIR="${HOME}/results/${LIBNAME}/wf${WF}"
+if [[ ! -d "$RESULTS_DIR" ]]; then
+	mkdir -vp $RESULTS_DIR
 else
 	read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
 	if [[ $REPLY =~ ^[Ss]$ ]]; then
 	  # Reseta a pasta de resultados do worflow
 		echo -e "\nApagando as pastas e reiniciando as análises..."
 		# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
-		rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
+		rm -r $RESULTS_DIR && mkdir -vp $RESULTS_DIR
 	fi
 fi
 
@@ -113,7 +113,7 @@ echo "Passos do WF$WF: ${WORKFLOWLIST[$INDICE]}"
 read -r -a STEPS <<< "${WORKFLOWLIST[$INDICE]}"
 for CALL_FUNC in ${STEPS[@]}; do
 	echo -e "\nExecutando o passo $CALL_FUNC... "
-	eval $CALL_FUNC $INPUT_DIR $OUTPUT_DIR
+	eval $CALL_FUNC $INPUT_DIR $RESULTS_DIR
 done
 
 # Gera o log das análises
