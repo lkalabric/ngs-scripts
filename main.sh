@@ -25,9 +25,6 @@ fi
 	# Instalação dos ambientes e pacotes (conda_packages.param)
 		install_conda_packages_if_missing
 
-# Parada para debug
-exit
-
 # Argumentos passados na linha do comando para o script main.sh
 LIBNAME=$1 	# Nome da biblioteca de dados
 WF=$2		# Número da workflow da análise
@@ -61,6 +58,8 @@ else
 	fi
 fi
 
+# Parada para debug
+#exit
 
 # Testando a função qc
 # echo $INPUT_DIR
