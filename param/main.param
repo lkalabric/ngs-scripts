@@ -1,0 +1,4 @@
+# Diretório de origem onde os arquivos estão localizados
+DATA_DIR="data"
+# Diretório de destino onde a nova estrutura de árvore será criada
+RESULTS_DIR="results"
