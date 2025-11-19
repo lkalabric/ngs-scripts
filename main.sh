@@ -7,7 +7,10 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
-# Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do workflow de bioinformática para análise de dados ngs
+# ================================================
+# Configurações do sistema e instalação de pacotes
+# ================================================
+# 1. Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do workflow de bioinformática para análise de dados ngs
 BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
@@ -17,7 +20,7 @@ else
 	exit
 fi
 
-# Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
+# 2. Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
 echo -e "Deseja (Re-)Configurar os pacotes? (y/n) \c"
 read -r
 echo $REPLY
@@ -30,7 +33,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 		install_conda_packages_if_missing
 fi
 
-# Argumentos passados na linha do comando para o script main.sh
+# ================
+# Entrada de dados
+# ================
+# 1. Parâmetros configuráveis passados para o script main.sh
+# Diretório de parâmetros configuráveis para os diversos scripts
+PARAM_DIR="/repos/ngs-scripts/param
+source "${HOME}/${PARAM_DIR}/main.param
+
+# 2. Parâmetros passados através da linha de comando
 LIBNAME=$1 	# Nome da biblioteca de dados
 WF=$2		# Número da workflow da análise
 if [[ $# -ne 2 ]]; then
@@ -39,8 +50,8 @@ if [[ $# -ne 2 ]]; then
 	exit 0
 fi
 
-# Caminhos dos dados de entrada
-RAWDIR="${HOME}/data/${LIBNAME}"
+# 3. Diretório de origem onde os arquivos estão localizados
+RAWDIR="${HOME}/${DATA}/${LIBNAME}"
 if [[ ! -d $RAWDIR ]]; then
 	echo "Erro: Pasta de dados não encontrada!"
 	exit 1
@@ -48,9 +59,13 @@ else
 	INPUT_DIR=$RAWDIR
 fi
 
+# ==============
+# Saída de dados
+# ==============
+# Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-RESULTS_DIR="${HOME}/results/${LIBNAME}/wf${WF}"
+RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
 if [[ ! -d "$RESULTS_DIR" ]]; then
 	mkdir -vp $RESULTS_DIR
 else
@@ -63,20 +78,14 @@ else
 	fi
 fi
 
+setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
+
 # Parada para debug
 #exit
 
-# Testando a função qc
-# echo $INPUT_DIR
-# echo $OUTPUT_DIR
-# qc $INPUT_DIR $OUTPUT_DIR
-
-# Parada para debug
-# exit
-
-#
+# ==============
 # Main do script
-#
+# ==============
 
 # wf1 - quality control
 # wf2 - naive assembly with no filtering or correction
