@@ -264,6 +264,48 @@ function install_conda_packages_if_missing () {
   #fi
 #}
 
+setup_directories () {
+    # ----------------------------------------------------
+    # Opcional: Descomente a linha abaixo para gerar arquivos de teste
+    # generate_sample_files
+    # ----------------------------------------------------
+
+    echo ""
+    echo "Iniciando a criação da árvore de diretórios em '$RESULTS_DIR/'..."
+    
+    # 1. Encontra todos os arquivos (-type f) no diretório de dados.
+    # 2. Extrai apenas o nome base (basename) de cada arquivo.
+    # 3. Usa 'sed' para remover a extensão (tudo após o último ponto).
+    # 4. 'sort' e 'uniq' garantem que apenas nomes de base únicos sejam considerados.
+    
+    find "$DATA_DIR" -type f | \
+    while read -r file; do
+        # 1. Obter apenas o nome do arquivo (removendo o caminho 'data/')
+        base_name=$(basename "$file")
+        
+        # 2. Remover a extensão (tudo a partir do último ponto)
+        # O comando 'sed' é eficiente aqui para remover '.extensao'
+        unique_base_name=$(echo "$base_name" | sed 's/\.[^.]*$//')
+        
+        # Omitir nomes vazios (caso haja diretórios ocultos ou de sistema)
+        if [ -n "$unique_base_name" ]; then
+            # Imprimir o nome de base único para fins de rastreamento
+            echo "$unique_base_name"
+        fi
+    done | \
+    sort | uniq | \
+    while read -r final_unique_name; do
+        
+        # 5. Criar o diretório correspondente em RESULTS_DIR
+        mkdir -p "$RESULTS_DIR/$final_unique_name"
+        echo "  -> Diretório criado: $RESULTS_DIR/$final_unique_name"
+    done
+    
+    echo ""
+    echo "Processo concluído!"
+    echo "Nova estrutura de diretórios criada em '$RESULTS_DIR'."
+}
+
 
 # Quality control report
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
