@@ -52,7 +52,7 @@ fi
 
 # 3. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
-	# Se não é um diretório, criar um diretório de entreda de dados baseado no nome da bilbioteca
+	# Cria um diretório de entreda de dados baseado no nome da biblioteca
 	INPUT_DIR="${HOME}/${DATA}/${LIBNAME}"
 else
 	RAWDIR=$1	# Diretório 
@@ -71,16 +71,22 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-RESULTS_DIR="${HOME}/${RESULTS_DIR}${LIBNAME}wf${WF}"
-if [[ ! -d "$RESULTS_DIR" ]]; then
-	mkdir -vp $RESULTS_DIR
+# Variável vazia (tamanho zero)
+if [[ -z "$LIBNAME" ]]; then
+    echo "A variável '$LIBNAME' está vazia."
+	echo "Os dados serão salvos numa pasta padrão."
 else
-	read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
-	if [[ $REPLY =~ ^[Ss]$ ]]; then
-	  # Reseta a pasta de resultados do worflow
-		echo -e "\nApagando as pastas e reiniciando as análises..."
-		# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
-		rm -r $RESULTS_DIR && mkdir -vp $RESULTS_DIR
+	RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+	if [[ ! -d "$RESULTS_DIR" ]]; then
+		mkdir -vp $RESULTS_DIR
+	else
+		read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
+		if [[ $REPLY =~ ^[Ss]$ ]]; then
+		  # Reseta a pasta de resultados do worflow
+			echo -e "\nApagando as pastas e reiniciando as análises..."
+			# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
+			rm -r $RESULTS_DIR && mkdir -vp $RESULTS_DIR
+		fi
 	fi
 fi
 
