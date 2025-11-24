@@ -51,12 +51,16 @@ if [[ $# -ne 2 ]]; then
 fi
 
 # 3. Diretório de origem onde os arquivos estão localizados
-RAWDIR="${HOME}/${DATA}/${LIBNAME}"
-if [[ ! -d $RAWDIR ]]; then
-	echo "Erro: Pasta de dados não encontrada!"
-	exit 1
+if [[ ! -d $LIBNAME ]]; then
+	"${HOME}/${DATA}/${LIBNAME}"
+	if [[ ! -d $RAWDIR ]]; then
+		echo "Erro: Pasta de dados não encontrada!"
+		exit 1
+	else
+		INPUT_DIR=$RAWDIR
+	fi
 else
-	INPUT_DIR=$RAWDIR
+	RAWDIR=$1
 fi
 
 # ==============
@@ -78,7 +82,7 @@ else
 	fi
 fi
 
-setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
+# setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
 
 # Parada para debug
 #exit
@@ -87,6 +91,7 @@ setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
 # Main do script
 # ==============
 
+# wf0 - consortium/MAGMA
 # wf1 - quality control
 # wf2 - naive assembly with no filtering or correction
 # wf3 - method with filtering but without error correction
@@ -97,6 +102,7 @@ setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
 # Define as etapas de cada workflow
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
+	'magma'
 	'qc trim'
 	'spades_bper'
 	'trim_bper spades_bper'
