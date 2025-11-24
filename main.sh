@@ -55,7 +55,7 @@ if [[ ! -d $LIBNAME ]]; then
 	# Se não é um diretório, criar um diretório de entreda de dados baseado no nome da bilbioteca
 	INPUT_DIR="${HOME}/${DATA}/${LIBNAME}"
 else
-	$RAWDIR=$1	# Diretório 
+	RAWDIR=$1	# Diretório 
 	if [[ ! -d $RAWDIR ]]; then
 		echo "Erro: Pasta de dados não encontrada!"
 		exit 1
