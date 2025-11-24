@@ -69,7 +69,7 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+RESULTS_DIR="${HOME}/${RESULTS_DIR}${LIBNAME}wf${WF}"
 if [[ ! -d "$RESULTS_DIR" ]]; then
 	mkdir -vp $RESULTS_DIR
 else
