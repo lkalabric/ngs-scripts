@@ -306,6 +306,16 @@ setup_directories () {
     echo "Nova estrutura de diretórios criada em '$RESULTS_DIR'."
 }
 
+# Magma
+# A pipeline for comprehensive genomic analyses of Mycobacterium tuberculosis with a focus on clinical decision making as well as research
+function magma () {
+	# --- Análise dos dados de teste remotamente ---
+	# Na Fiocruz isso não roda por conta do acesso a internet 
+    nextflow run 'https://github.com/TORCH-Consortium/MAGMA' \
+         -profile docker,low_memory \
+         -r v2.2.2 \
+         -params-file examples/reviget/my_parameters_3_remote.yml
+}
 
 # Quality control report
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
