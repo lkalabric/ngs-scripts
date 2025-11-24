@@ -71,12 +71,8 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-# Variável vazia (tamanho zero)
-if [[ -z "$LIBNAME" ]]; then
-    echo "A variável '$LIBNAME' está vazia."
-	echo "Os dados serão salvos numa pasta padrão."
-else
-	RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+if [[ ! -d "$LIBNAME" ]]; then
+    RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
 	if [[ ! -d "$RESULTS_DIR" ]]; then
 		mkdir -vp $RESULTS_DIR
 	else
@@ -88,6 +84,8 @@ else
 			rm -r $RESULTS_DIR && mkdir -vp $RESULTS_DIR
 		fi
 	fi
+else
+	echo "Os resultados serão salvos no diretório padrão do script!" 
 fi
 
 # setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
