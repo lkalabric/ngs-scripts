@@ -42,7 +42,7 @@ PARAM_DIR="/repos/ngs-scripts/param
 source "${HOME}/${PARAM_DIR}/main.param
 
 # 2. Parâmetros passados através da linha de comando
-LIBNAME=$1 	# Nome da biblioteca de dados
+LIBNAME=$1	# Nome da biblioteca de dados
 WF=$2		# Número da workflow da análise
 if [[ $# -ne 2 ]]; then
 	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
@@ -52,15 +52,17 @@ fi
 
 # 3. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
-	"${HOME}/${DATA}/${LIBNAME}"
+	# Se não é um diretório, criar um diretório de entreda de dados baseado no nome da bilbioteca
+	INPUT_DIR="${HOME}/${DATA}/${LIBNAME}"
+else
+	$RAWDIR=$1	# Diretório 
 	if [[ ! -d $RAWDIR ]]; then
 		echo "Erro: Pasta de dados não encontrada!"
 		exit 1
 	else
+		# Senão, usar o diretório mesmo
 		INPUT_DIR=$RAWDIR
 	fi
-else
-	RAWDIR=$1
 fi
 
 # ==============
