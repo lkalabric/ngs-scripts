@@ -319,7 +319,7 @@ function magma () {
     nextflow run 'https://github.com/TORCH-Consortium/MAGMA' \
          -profile docker,low_memory \
          -r v2.2.2 \
-         -params-file $INPUT_DIR/my_parameters_3_remote.yml
+         -params-file $INPUT_DIR/my_parameters_3_local.yml
 }
 
 # Quality control report
