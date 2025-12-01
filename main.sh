@@ -25,11 +25,11 @@ fi
 # ================
 # 2. Parâmetros configuráveis passados para o script main.sh
 # Diretório de parâmetros configuráveis para os diversos scripts
-PARAM_DIR="/repos/ngs-scripts/param
+PARAM_DIR="/repos/ngs-scripts/param"
 if [[ -f "${HOME}/${PARAM_DIR}/main.param" ]]; then
 	echo "Carregando arquivo de configuração..."
 	# Neste momento, configura apenas $DATA_DIR e $RESULT_DIR
-	source "${HOME}/${PARAM_DIR}/main.param
+	source "${HOME}/${PARAM_DIR}/main.param"
 else
 	echo "Arquivo de configuração ${HOME}/${PARAM_DIR}/main.param não disponível. Verifique com o desenvolvedor do seu pipeline!"
 	exit
