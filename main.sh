@@ -15,7 +15,7 @@
 WF=$1		# Número da workflow da análise
 LIBNAME=$2	# Nome da biblioteca de dados
 if [[ $# -ne 2 ]]; then
-	echo "Erro: Faltou o número do workflow ou o nome da biblioteca!"
+	echo "❌ ERRO: Faltou o número do workflow ou o nome da biblioteca!"
 	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
 	exit 0
 fi
@@ -29,7 +29,8 @@ if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
 	source "$BIBLIOTECA"
 else
-	echo "Biblioteca não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	echo "❌ ERRO: Biblioteca não disponível."
+	echo "Verifique com o desenvolvedor do seu pipeline!"
 	exit
 fi
 
@@ -41,7 +42,8 @@ if [[ -f "${HOME}/${PARAM_DIR}/main.param" ]]; then
 	# Neste momento, configura apenas $DATA_DIR e $RESULT_DIR
 	source "${HOME}/${PARAM_DIR}/main.param"
 else
-	echo "Arquivo de configuração ${HOME}/${PARAM_DIR}/main.param não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	echo "❌ ERRO: Arquivo de configuração ${HOME}/${PARAM_DIR}/main.param não disponível."
+	echo "Verifique com o desenvolvedor do seu pipeline!"
 	exit
 fi
 
@@ -50,18 +52,19 @@ fi
 # ================
 # 4. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
-	# Cria um diretório de entreda de dados baseado no nome da biblioteca
+	# Diretório de entreda padrão baseado no nome da biblioteca
 	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
-	echo "   Para verificação de erro $INPUT_DIR..."
+	echo "✅ Diretório de entrada encontrado em $INPUT_DIR..."
 else
-	RAWDIR=$2	# Diretório 
+	RAWDIR=$2	# Diretório de entrada proposto pelo usuário
 	if [[ ! -d $RAWDIR ]]; then
-		echo "Erro: Pasta de dados não encontrada!"
+		echo "❌ Erro: Pasta de dados não encontrada!"
 		exit 1
 	else
 		# Senão, usar o diretório mesmo
 		INPUT_DIR=$RAWDIR
-		echo "   Para verificação de erro $INPUT_DIR..."
+		LIBNAME=basename $INPUT_DIR
+		echo "✅ Diretório de entrada encontrado em $INPUT_DIR..."
 	fi
 fi
 
@@ -71,43 +74,19 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-if [[ ! -d $LIBNAME ]]; then
-    OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
-	echo "   Para verificação de erro $OUTPUT_DIR..."
+OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+if [[ ! -d "$OUTPUT_DIR" ]]; then
+	echo "Criando diretório de saída em $OUTPUT_DIR..."
+	mkdir -vp $OUTPUT_DIR
 else
-	OUTPUT_DIR="${HOME}/${RESULTS_DIR}/$(basename ${LIBNAME})/wf${WF}"
-	if [[ ! -d "$OUTPUT_DIR" ]]; then
-		mkdir -vp $OUTPUT_DIR
-	else
-		read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
-		if [[ $REPLY =~ ^[Ss]$ ]]; then
-		  # Reseta a pasta de resultados do worflow
-			echo -e "\nApagando as pastas e reiniciando as análises..."
-			# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
-			rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
-		fi
+	echo "Diretório de saída já existe!"
+	read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
+	if [[ $REPLY =~ ^[Ss]$ ]]; then
+	  # Reseta a pasta de resultados do worflow
+		echo -e "\nApagando as pastas e reiniciando as análises..."
+		# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
+		rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
 	fi
-else
-	echo "Os resultados serão salvos no diretório padrão do script!" 
-fi
-
-
-if [[ ! -d $LIBNAME ]]; then
-    OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
-	echo "   Para verificação de erro $OUTPUT_DIR..."
-	if [[ ! -d "$OUTPUT_DIR" ]]; then
-		mkdir -vp $OUTPUT_DIR
-	else
-		read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
-		if [[ $REPLY =~ ^[Ss]$ ]]; then
-		  # Reseta a pasta de resultados do worflow
-			echo -e "\nApagando as pastas e reiniciando as análises..."
-			# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
-			rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
-		fi
-	fi
-else
-	echo "Os resultados serão salvos no diretório padrão do script!" 
 fi
 
 # setup_diretories "${INPUT_DIR} ${RESULTS_DIR}
