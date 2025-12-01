@@ -52,7 +52,7 @@ fi
 if [[ ! -d $LIBNAME ]]; then
 	# Cria um diretório de entreda de dados baseado no nome da biblioteca
 	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
-	echo " Para verificação de erro $INPUT_DIR..."
+	echo "   Para verificação de erro $INPUT_DIR..."
 else
 	RAWDIR=$2	# Diretório 
 	if [[ ! -d $RAWDIR ]]; then
@@ -61,7 +61,7 @@ else
 	else
 		# Senão, usar o diretório mesmo
 		INPUT_DIR=$RAWDIR
-		echo " Para verificação de erro $INPUT_DIR..."
+		echo "   Para verificação de erro $INPUT_DIR..."
 	fi
 fi
 
