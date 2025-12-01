@@ -71,7 +71,28 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-if [[ ! -d "$LIBNAME" ]]; then
+if [[ ! -d $LIBNAME ]]; then
+    OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+	echo "   Para verificação de erro $OUTPUT_DIR..."
+else
+	OUTPUT_DIR="${HOME}/${RESULTS_DIR}/$(basename ${LIBNAME})/wf${WF}"
+	if [[ ! -d "$OUTPUT_DIR" ]]; then
+		mkdir -vp $OUTPUT_DIR
+	else
+		read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
+		if [[ $REPLY =~ ^[Ss]$ ]]; then
+		  # Reseta a pasta de resultados do worflow
+			echo -e "\nApagando as pastas e reiniciando as análises..."
+			# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
+			rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
+		fi
+	fi
+else
+	echo "Os resultados serão salvos no diretório padrão do script!" 
+fi
+
+
+if [[ ! -d $LIBNAME ]]; then
     OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
 	echo "   Para verificação de erro $OUTPUT_DIR..."
 	if [[ ! -d "$OUTPUT_DIR" ]]; then
