@@ -54,7 +54,7 @@ if [[ ! -d $LIBNAME ]]; then
 	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
 	echo " Para verificação de erro $INPUT_DIR..."
 else
-	RAWDIR=$1	# Diretório 
+	RAWDIR=$2	# Diretório 
 	if [[ ! -d $RAWDIR ]]; then
 		echo "Erro: Pasta de dados não encontrada!"
 		exit 1
