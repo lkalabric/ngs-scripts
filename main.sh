@@ -7,10 +7,23 @@
 # Controle de versão: 
 # Versão 1.0 de 17 NOV 2025 - Programa inicial revisado
 
+
+# =====================================================
+# Validação dos parâmetros passados da linha de comando
+# =====================================================
+# 1. Parâmetros passados através da linha de comando
+WF=$1		# Número da workflow da análise
+LIBNAME=$2	# Nome da biblioteca de dados
+if [[ $# -ne 2 ]]; then
+	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
+	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
+	exit 0
+fi
+
 # ================================================
 # Configurações do sistema e instalação de pacotes
 # ================================================
-# 1. Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do workflow de bioinformática para análise de dados ngs
+# 2. Carregamento do arquivo de biblioteca contendo as funções desenvolvidas para execução do workflow de bioinformática para análise de dados ngs
 BIBLIOTECA="${HOME}/repos/ngs-scripts/biblioteca.sh"
 if [[ -f "$BIBLIOTECA" ]]; then
 	echo "Carregando a biblioteca..."
@@ -20,10 +33,7 @@ else
 	exit
 fi
 
-# ================
-# Entrada de dados
-# ================
-# 2. Parâmetros configuráveis passados para o script main.sh
+# 3. Parâmetros configuráveis passados para o script main.sh
 # Diretório de parâmetros configuráveis para os diversos scripts
 PARAM_DIR="/repos/ngs-scripts/param"
 if [[ -f "${HOME}/${PARAM_DIR}/main.param" ]]; then
@@ -35,15 +45,9 @@ else
 	exit
 fi
 
-# 3. Parâmetros passados através da linha de comando
-WF=$1		# Número da workflow da análise
-LIBNAME=$2	# Nome da biblioteca de dados
-if [[ $# -ne 2 ]]; then
-	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
-	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
-	exit 0
-fi
-
+# ================
+# Entrada de dados
+# ================
 # 4. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
 	# Cria um diretório de entreda de dados baseado no nome da biblioteca
