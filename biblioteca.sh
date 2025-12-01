@@ -291,46 +291,39 @@ setup_directories () {
     # 3. Usa 'sed' para remover a extensão (tudo após o último ponto).
     # 4. 'sort' e 'uniq' garantem que apenas nomes de base únicos sejam considerados.
     
-    find "$INPUT_DIR" -type f -name "*.fastq.gz" | \
+    find "$INPUT_DIR" -type f -name "$INPUT_TYPE" | \
     while read -r file_name; do
-        # 1. Obter apenas o nome do arquivo (removendo o caminho '$INPUT_DIR')
-        echo "File: $file_name"
-		base_name=$(basename "$file_name")
-		echo "base_name: $base_name"	  
-		
+        # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
+        base_name=$(basename "$file_name")
+			
         # 2. Remover a extensão (tudo a partir do último ponto)
         # O comando 'sed' é eficiente aqui para remover '.extensao'
-        unique_base_name=$(echo "$base_name" | sed 's/\.[^.]*$//')
-		echo "unique_base_name: $unique_base_name"	  
+        # unique_base_name=$(echo "$base_name" | sed 's/\.[^.]*$//')
+		# echo "unique_base_name: $unique_base_name"	  
 
 		# O BASH é muito eficiente para manipulação de strings.
 		# Usamos '%%.*' para remover a maior correspondência da direita para a esquerda (a extensão)
 		# e '%%_R*' para remover a maior correspondência da direita para a esquerda (o "_R" e tudo o que vier depois).
 
-		# 3. Remove a extensão (e.g., .fastq.gz)
-		prefixo_sem_extensao="${unique_base_name%%.*}"
-		echo "prefixo_sem_extensao: $prefixo_sem_extensao"	  
-
+		# 3. Remove a extensão (e.g., '.fastq.gz')
+		unique_base_name="${base_name%%.*}"
+		
 		# 4. Remove o padrão "_R" e tudo o que vier depois
 		# (e.g., de "Minha_Amostra_R1" remove "_R1")
-		prefixo_limpo="${prefixo_sem_extensao%%_R*}"
-		echo "prefixo_limpo: $prefixo_limpo"	  
+		unique_base_name="${unique_base_name%%_R*}"
 		
         # Omitir nomes vazios (caso haja diretórios ocultos ou de sistema)
-        if [ -n "$prefixo_limpo" ]; then
+        if [ -n "$unique_base_name" ]; then
             # Imprimir o nome de base único para fins de rastreamento
-            echo "$prefixo_limpo"
+            echo "$unique_base_name"
         fi
+    done | \
+    sort | uniq | \
+    while read -r final_unique_name; do
+    	# 5. Criar o diretório correspondente em RESULTS_DIR
+        mkdir -p "$OUTPUT_DIR/$final_unique_name"
+        echo "  -> Diretório criado: $OUTPUT_DIR/$final_unique_name"
     done
-	
-	
-	#| \
-    #sort | uniq | \
-    #while read -r final_unique_name; do
-        # 5. Criar o diretório correspondente em RESULTS_DIR
-    #    mkdir -p "$OUTPUT_DIR/$final_unique_name"
-    #    echo "  -> Diretório criado: $OUTPUT_DIR/$final_unique_name"
-    #done
     echo "Processo concluído!"
     echo "Nova estrutura de diretórios criada em '$OUTPUT_DIR'."
 }
