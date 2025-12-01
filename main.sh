@@ -21,10 +21,10 @@ else
 fi
 
 # 2. Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
-echo -e "Deseja (Re-)Configurar os pacotes? (y/n) \c"
+echo -e "Deseja (Re-)Configurar os pacotes? (Ss/Nn) \c"
 read -r
 echo $REPLY
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if [[ $REPLY =~ ^[Sn]$ ]]; then
 	# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
 		install_linux_packages_if_missing
 	# Instalação do conda, se necessário
@@ -39,6 +39,7 @@ fi
 # 1. Parâmetros configuráveis passados para o script main.sh
 # Diretório de parâmetros configuráveis para os diversos scripts
 PARAM_DIR="/repos/ngs-scripts/param
+# Neste momento, configura aprenas $DATA_DIR e $RESULT_DIR
 source "${HOME}/${PARAM_DIR}/main.param
 
 # 2. Parâmetros passados através da linha de comando
@@ -53,7 +54,8 @@ fi
 # 3. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
 	# Cria um diretório de entreda de dados baseado no nome da biblioteca
-	INPUT_DIR="${HOME}/${DATA}/${LIBNAME}"
+	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
+	echo " Para verificação de erro $INPUT_DIR..."
 else
 	RAWDIR=$1	# Diretório 
 	if [[ ! -d $RAWDIR ]]; then
@@ -62,6 +64,7 @@ else
 	else
 		# Senão, usar o diretório mesmo
 		INPUT_DIR=$RAWDIR
+		echo " Para verificação de erro $INPUT_DIR..."
 	fi
 fi
 
@@ -72,16 +75,17 @@ fi
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
 if [[ ! -d "$LIBNAME" ]]; then
-    RESULTS_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
-	if [[ ! -d "$RESULTS_DIR" ]]; then
-		mkdir -vp $RESULTS_DIR
+    OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+	echo " Para verificação de erro $OUTPUT_DIR..."
+	if [[ ! -d "$OUTPUT_DIR" ]]; then
+		mkdir -vp $OUTPUT_DIR
 	else
 		read -p "Re-analisar os dados [S-apagar e re-analisa os dados / N-continuar as análises de onde pararam]? " -n 1 -r
 		if [[ $REPLY =~ ^[Ss]$ ]]; then
 		  # Reseta a pasta de resultados do worflow
 			echo -e "\nApagando as pastas e reiniciando as análises..."
 			# [[ ! -d $OUTPUT_DIR ]] || mkdir -vp $OUTPUT_DIR && rm -r $OUTPUT_DIR; mkdir -vp $OUTPUT_DIR
-			rm -r $RESULTS_DIR && mkdir -vp $RESULTS_DIR
+			rm -r $OUTPUT_DIR && mkdir -vp $OUTPUT_DIR
 		fi
 	fi
 else
@@ -134,7 +138,7 @@ echo "Passos do WF$WF: ${WORKFLOWLIST[$INDICE]}"
 read -r -a STEPS <<< "${WORKFLOWLIST[$INDICE]}"
 for CALL_FUNC in ${STEPS[@]}; do
 	echo -e "\nExecutando o passo $CALL_FUNC... "
-	eval $CALL_FUNC $INPUT_DIR $RESULTS_DIR
+	eval $CALL_FUNC $INPUT_DIR $OUTPUT_DIR
 done
 
 # Gera o log das análises
