@@ -97,20 +97,17 @@ fi
 # ==============
 # Main do script
 # ==============
-
-# wf0 - consortium/MAGMA
-# wf1 - quality control
-# wf2 - naive assembly with no filtering or correction
-# wf3 - method with filtering but without error correction
-# wf4 - method with filtering and error correction
-# wf5 - test flash
-# wf6 - test montagem contigs end-to-end
+# wf1 - system config
+# wf2 - consortium/MAGMA
+# wf3 - quality control
+# wf4 - quality control and trimmomatic
 
 # Define as etapas de cada workflow
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
 	'config'
 	'magma'
+	'qc'
 	'qc setup_directories trim'
 	'spades_bper'
 	'trim_bper spades_bper'
