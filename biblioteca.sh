@@ -293,8 +293,8 @@ setup_directories () {
     
     find "$INPUT_DIR" -type f | \
     while read -r file; do
-        # 1. Obter apenas o nome do arquivo (removendo o caminho 'data/')
-        echo "File: $file_name"
+        # 1. Obter apenas o nome do arquivo (removendo o caminho '$INPUT_DIR')
+        # echo "File: $file_name"
 		base_name=$(basename "$file_name")
 	  
         # 2. Remover a extensão (tudo a partir do último ponto)
