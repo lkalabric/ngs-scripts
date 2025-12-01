@@ -1,3 +1,18 @@
+function config () {
+	# Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
+	echo -e "Deseja (Re-)Configurar os pacotes? (Ss/Nn) \c"
+	read -r
+	echo $REPLY
+	if [[ $REPLY =~ ^[Ss]$ ]]; then
+		# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
+			install_linux_packages_if_missing
+		# Instalação do conda, se necessário
+			install_conda_if_missing
+		# Instalação dos ambientes e pacotes (conda_packages.param)
+			install_conda_packages_if_missing
+	fi
+}
+
 function install_linux_packages_if_missing () {
 	# =================================================================
 	# Script: Instalação Condicional de Comandos Ausentes
