@@ -13,7 +13,7 @@
 # =====================================================
 # 1. Parâmetros passados através da linha de comando
 WF=$1		# Número da workflow da análise
-LIBNAME=$2	# Nome da biblioteca de dados
+LIBRARY=$2	# Nome da biblioteca ou caminho de entrada de dados
 if [[ $# -ne 2 ]]; then
 	echo "❌ ERRO: Faltou o número do workflow ou o nome da biblioteca!"
 	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
@@ -51,22 +51,21 @@ fi
 # Entrada de dados
 # ================
 # 4. Diretório de origem onde os arquivos estão localizados
-if [[ ! -d $LIBNAME ]]; then
+if [[ ! -d $LIBRARY ]]; then
 	# Diretório de entreda padrão baseado no nome da biblioteca
-	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
-	echo "✅ Diretório de entrada encontrado em $INPUT_DIR..."
+	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBRARY}"
 else
-	RAWDIR=$2	# Diretório de entrada proposto pelo usuário
-	if [[ ! -d $RAWDIR ]]; then
-		echo "❌ Erro: Pasta de dados não encontrada!"
-		exit 1
-	else
-		# Senão, usar o diretório mesmo
-		INPUT_DIR=$RAWDIR
-		LIBNAME=basename $INPUT_DIR
-		echo "✅ Diretório de entrada encontrado em $INPUT_DIR..."
-	fi
+	# Diretório de entrada proposto pelo usuário
+	INPUT_DIR=$2
+	LIBRARY=basename $INPUT_DIR
 fi
+if [[ ! -d $INPUT_DIR ]]; then
+	echo "❌ Erro: Pasta de dados não encontrada!"
+	exit 1
+else
+	echo "✅ Diretório de entrada encontrado em $INPUT_DIR..."
+fi
+
 
 # ==============
 # Saída de dados
@@ -74,7 +73,7 @@ fi
 # Diretório de destino onde a nova estrutura de árvore será criada
 # Cria o diretório de resultados, caso não exista
 echo "Preparando pastas para (re-)análise dos dados..."
-OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
+OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBRARY}/wf${WF}"
 if [[ ! -d "$OUTPUT_DIR" ]]; then
 	echo "Criando diretório de saída em $OUTPUT_DIR..."
 	mkdir -vp $OUTPUT_DIR
@@ -137,5 +136,5 @@ for CALL_FUNC in ${STEPS[@]}; do
 done
 
 # Gera o log das análises
-#log_generator.sh ${LIBNAME} ${WF}
+#log_generator.sh ${LIBRARY} ${WF}
 #exit 7
