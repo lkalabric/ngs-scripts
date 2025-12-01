@@ -73,7 +73,7 @@ fi
 echo "Preparando pastas para (re-)análise dos dados..."
 if [[ ! -d "$LIBNAME" ]]; then
     OUTPUT_DIR="${HOME}/${RESULTS_DIR}/${LIBNAME}/wf${WF}"
-	echo " Para verificação de erro $OUTPUT_DIR..."
+	echo "   Para verificação de erro $OUTPUT_DIR..."
 	if [[ ! -d "$OUTPUT_DIR" ]]; then
 		mkdir -vp $OUTPUT_DIR
 	else
