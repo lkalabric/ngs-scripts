@@ -351,19 +351,16 @@ function fastqc () {
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
-		OUTPUT_DIR="$2/fastqc"
-	echo "Input: ${INPUT_DIR}"
-	echo "Output: ${OUTPUT_DIR}"
+		OUTPUT_DIR=$2
 	# Copia os arquivos brutos para iniciar o workflow
 	# cp "${INPUT_DIR}/*" "${OUTPUT_DIR}"
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
-	
 	find "$OUTPUT_DIR" -type d | \
     while read -r library_name; do
         # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
         base_name=$(basename "$library_name")
-		OUTPUT_DIR="$base_name\fastqc"      
+		OUTPUT_DIR="$base_name/fastqc"      
 		# Execução do comando propriamente
 		if [[ ! -d "$OUTPUT_DIR" ]]; then
 			echo "Criando a pasta dos resultados do fastqc..."
