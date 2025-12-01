@@ -30,11 +30,11 @@ PARAM_DIR="/repos/ngs-scripts/param
 source "${HOME}/${PARAM_DIR}/main.param
 
 # 3. Parâmetros passados através da linha de comando
-LIBNAME=$1	# Nome da biblioteca de dados
-WF=$2		# Número da workflow da análise
+WF=$1		# Número da workflow da análise
+LIBNAME=$2	# Nome da biblioteca de dados
 if [[ $# -ne 2 ]]; then
 	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
-	echo "Sintaxe: ./main.sh <LIBRARY> <WF: 1, 2, 3,...>"
+	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
 	exit 0
 fi
 
