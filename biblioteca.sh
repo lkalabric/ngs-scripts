@@ -358,16 +358,24 @@ function fastqc () {
 	# cp "${INPUT_DIR}/*" "${OUTPUT_DIR}"
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
-	# Execução do comando propriamente
-	if [[ ! -d "$OUTPUT_DIR" ]]; then
-		echo "Criando a pasta dos resultados do fastqc..."
-		mkdir -vp "$OUTPUT_DIR"
-		echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
-		fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/${INPUT_TYPE}
-		# INPUT_DIR=$OUTPUT_DIR
-	else
-		echo "Dados analisados previamente..."
-	fi
+	
+	find "$OUTPUT_DIR" -type d | \
+    while read -r library_name; do
+        # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
+        base_name=$(basename "$library_name")
+		OUTPUT_DIR="$base_name\fastqc"      
+		# Execução do comando propriamente
+		if [[ ! -d "$OUTPUT_DIR" ]]; then
+			echo "Criando a pasta dos resultados do fastqc..."
+			mkdir -vp "$OUTPUT_DIR"
+			echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
+			fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/${INPUT_TYPE}
+			# INPUT_DIR=$OUTPUT_DIR
+		else
+			echo "Dados analisados previamente..."
+		fi
+		
+	done
 }
 
 # Trimagem de apaptadores de dados de sequencias Illumina
