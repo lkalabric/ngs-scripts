@@ -57,7 +57,7 @@ if [[ ! -d $LIBRARY ]]; then
 else
 	# Diretório de entrada proposto pelo usuário
 	INPUT_DIR=$2
-	LIBRARY=basename $INPUT_DIR
+	LIBRARY=$(basename $INPUT_DIR)
 fi
 if [[ ! -d $INPUT_DIR ]]; then
 	echo "❌ Erro: Pasta de dados não encontrada!"
