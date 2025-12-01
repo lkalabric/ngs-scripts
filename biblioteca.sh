@@ -339,7 +339,7 @@ function magma () {
 
 # Quality control report
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-function qc () {
+function fastqc () {
 	# Argumentos dentro da função:
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
