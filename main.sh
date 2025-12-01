@@ -15,7 +15,7 @@
 WF=$1		# Número da workflow da análise
 LIBNAME=$2	# Nome da biblioteca de dados
 if [[ $# -ne 2 ]]; then
-	echo "Erro: Faltou o nome da biblioteca ou número do workflow!"
+	echo "Erro: Faltou o número do workflow ou o nome da biblioteca!"
 	echo "Sintaxe: ./main.sh <WF: 1, 2, 3,...> <LIBRARY>"
 	exit 0
 fi
