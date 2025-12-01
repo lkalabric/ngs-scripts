@@ -294,12 +294,15 @@ setup_directories () {
     find "$INPUT_DIR" -type f | \
     while read -r file; do
         # 1. Obter apenas o nome do arquivo (removendo o caminho 'data/')
-        base_name=$(basename "$file")
+        echo "File: $file"
+		base_name=$(basename "$file")
+		echo "Basename: $base_name"
    
         # 2. Remover a extensão (tudo a partir do último ponto)
         # O comando 'sed' é eficiente aqui para remover '.extensao'
         unique_base_name=$(echo "$base_name" | sed 's/\.[^.]*$//')
-        
+		echo "Unique basename: $unique_base_name"
+		
         # Omitir nomes vazios (caso haja diretórios ocultos ou de sistema)
         if [ -n "$unique_base_name" ]; then
             # Imprimir o nome de base único para fins de rastreamento
