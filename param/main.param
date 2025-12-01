@@ -1,5 +1,8 @@
-# Diretório de origem onde os arquivos estão localizados
+# Diretório de entrada padrão
 DATA_DIR="data"
 
-# Diretório de destino onde a nova estrutura de árvore será criada
+# Extensão padrão dos arquivos de dados
+INPUT_TYPE="*.fastq.gz"
+
+# Diretório de saída padrão
 RESULTS_DIR="results"
