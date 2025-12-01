@@ -20,29 +20,16 @@ else
 	exit
 fi
 
-# 2. Configuração do sistema e instalação dos pacotes requeridos: fastqc, trimmomatic, mustek
-echo -e "Deseja (Re-)Configurar os pacotes? (Ss/Nn) \c"
-read -r
-echo $REPLY
-if [[ $REPLY =~ ^[Sn]$ ]]; then
-	# Instalação dos softwares Linux requeridos (linux_packages.param), se necessário
-		install_linux_packages_if_missing
-	# Instalação do conda, se necessário
-		install_conda_if_missing
-	# Instalação dos ambientes e pacotes (conda_packages.param)
-		install_conda_packages_if_missing
-fi
-
 # ================
 # Entrada de dados
 # ================
-# 1. Parâmetros configuráveis passados para o script main.sh
+# 2. Parâmetros configuráveis passados para o script main.sh
 # Diretório de parâmetros configuráveis para os diversos scripts
 PARAM_DIR="/repos/ngs-scripts/param
 # Neste momento, configura aprenas $DATA_DIR e $RESULT_DIR
 source "${HOME}/${PARAM_DIR}/main.param
 
-# 2. Parâmetros passados através da linha de comando
+# 3. Parâmetros passados através da linha de comando
 LIBNAME=$1	# Nome da biblioteca de dados
 WF=$2		# Número da workflow da análise
 if [[ $# -ne 2 ]]; then
@@ -51,7 +38,7 @@ if [[ $# -ne 2 ]]; then
 	exit 0
 fi
 
-# 3. Diretório de origem onde os arquivos estão localizados
+# 4. Diretório de origem onde os arquivos estão localizados
 if [[ ! -d $LIBNAME ]]; then
 	# Cria um diretório de entreda de dados baseado no nome da biblioteca
 	INPUT_DIR="${HOME}/${DATA_DIR}/${LIBNAME}"
@@ -112,6 +99,7 @@ fi
 # Define as etapas de cada workflow
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
+	'config'
 	'magma'
 	'qc setup_directories trim'
 	'spades_bper'
