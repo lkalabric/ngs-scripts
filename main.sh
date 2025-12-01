@@ -26,8 +26,14 @@ fi
 # 2. Parâmetros configuráveis passados para o script main.sh
 # Diretório de parâmetros configuráveis para os diversos scripts
 PARAM_DIR="/repos/ngs-scripts/param
-# Neste momento, configura aprenas $DATA_DIR e $RESULT_DIR
-source "${HOME}/${PARAM_DIR}/main.param
+if [[ -f "${HOME}/${PARAM_DIR}/main.param" ]]; then
+	echo "Carregando arquivo de configuração..."
+	# Neste momento, configura apenas $DATA_DIR e $RESULT_DIR
+	source "${HOME}/${PARAM_DIR}/main.param
+else
+	echo "Arquivo de configuração ${HOME}/${PARAM_DIR}/main.param não disponível. Verifique com o desenvolvedor do seu pipeline!"
+	exit
+fi
 
 # 3. Parâmetros passados através da linha de comando
 WF=$1		# Número da workflow da análise
