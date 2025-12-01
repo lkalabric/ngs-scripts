@@ -291,8 +291,8 @@ setup_directories () {
     # 3. Usa 'sed' para remover a extensão (tudo após o último ponto).
     # 4. 'sort' e 'uniq' garantem que apenas nomes de base únicos sejam considerados.
     
-    find "$INPUT_DIR" -type f | \
-    while read -r file; do
+    find "$INPUT_DIR" -type f -name "*.fastq.gz" | \
+    while read -r file_name; do
         # 1. Obter apenas o nome do arquivo (removendo o caminho '$INPUT_DIR')
         echo "File: $file_name"
 		base_name=$(basename "$file_name")
