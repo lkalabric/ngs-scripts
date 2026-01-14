@@ -411,7 +411,7 @@ function read_dir () {
 	echo "Saída: $OUTPUT_DIR"
 	
 	for SAMPLE in $(find $INPUT_DIR -type d); do
-		base_name=$(basename "$SAMPLE")
+		base_name=$(do basename "$SAMPLE")
 		echo "Sample: $SAMPLE"
 		echo "Basename: $base_name"
 		mkdir $OUTPUT_DIR/$base_name
