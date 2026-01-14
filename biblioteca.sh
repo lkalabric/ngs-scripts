@@ -434,7 +434,8 @@ function fastqc () {
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	
 	# Análise propriamente dita
-	for base_name in $(find "$INPUT_DIR/." -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
+	for SAMPLE in $(find "$INPUT_DIR/." -maxdepth 1 -mindepth 1 -type d); do
+		base_name=$(basename $SAMPLE)
 		FASTQC_DIR="$OUTPUT_DIR/$base_name/fastqc"
 		if [[ -n "$base_name" && ! -d "$FASTQC_DIR" ]]; then
 			echo "Criando a pasta de saída nos dados $base_name..."
