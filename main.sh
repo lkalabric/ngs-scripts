@@ -106,7 +106,7 @@ fi
 WORKFLOWLIST=(
 	'config'
 	'magma'
-	'organize_files'
+	'organize_files read_dir'
 	'setup_directories fastqc'
 	'spades_bper'
 	'trim_bper spades_bper'
@@ -132,7 +132,7 @@ echo "Passos do WF$WF: ${WORKFLOWLIST[$INDICE]}"
 read -r -a STEPS <<< "${WORKFLOWLIST[$INDICE]}"
 for CALL_FUNC in ${STEPS[@]}; do
 	echo -e "\nExecutando o passo $CALL_FUNC... "
-	eval $CALL_FUNC $INPUT_DIR $OUTPUT_DIR
+	eval $CALL_FUNC $INPUT_DIR
 done
 
 # Gera o log das análises
