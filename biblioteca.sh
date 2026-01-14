@@ -441,28 +441,11 @@ function fastqc () {
 			FASTQC_DIR="$OUTPUT_DIR/$base_name/fastqc"
 			mkdir -vp $FASTQC_DIR
 			echo -e "Executando o fastqc nos dados disponíveis em ${base_name}...\n"
-			#fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${base_name}/*		
+			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${base_name}/*		
 		else
 			echo "Dados analisados previamente..."
 		fi
-	done
-	
-	find "$OUTPUT_DIR" -type d | \
-    while read -r INPUT_DIR; do
-        # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
-        base_name=$(basename "$INPUT_DIR")
-		# OUTPUT_DIR="$base_name/fastqc"      
-		# Execução do comando propriamente
-		if [[ -n "$base_name" && ! -d "$FASTQC_DIR" ]]; then
-			echo "Criando a pasta dos resultados do fastqc..."
-			mkdir -vp "$FASTQC_DIR"
-			echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
-			fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/${INPUT_TYPE}			
-		else
-			echo "Dados analisados previamente..."
-		fi
-	done
-	$INPUT_DIR=$FASTQC_DIR
+	done	
 }
 
 function trim () {
