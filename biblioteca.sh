@@ -408,9 +408,10 @@ function read_dir () {
 	INPUT_DIR=$1
 	OUTPUT_DIR=$2
 	
-	for SAMPLE in $INPUT_DIR; do
+	for SAMPLE in $(find $INPUT_DIR -type d); do
 		base_name=$(basename "$SAMPLE")
-		ls $OUTPUT_DIR/$base_name
+		mkdir $OUTPUT_DIR/$base_name
+		cp $INPUT_DIR/$base_name $OUTPUT_DIR/$base_name
 	done
 }
 
