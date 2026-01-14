@@ -400,6 +400,7 @@ function organize_files () {
 	    echo "Movendo '$file' -> '$OUTPUT_DIR/$root_name/'"
 	    mv "$file" "$OUTPUT_DIR/$root_name/"
 	done
+	$INPUT_DIR=$OUTPUT_DIR
 }
 
 
@@ -431,7 +432,6 @@ function fastqc () {
 		else
 			echo "Dados analisados previamente..."
 		fi
-		
 	done
 }
 
