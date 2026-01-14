@@ -362,7 +362,7 @@ function fastqc () {
         base_name=$(basename "$INPUT_DIR")
 		OUTPUT_DIR="$base_name/fastqc"      
 		# Execução do comando propriamente
-		if [[ -n "$base_name" and ! -d "$OUTPUT_DIR" ]]; then
+		if [[ -n "$base_name" && ! -d "$OUTPUT_DIR" ]]; then
 			echo "Criando a pasta dos resultados do fastqc..."
 			mkdir -vp "$OUTPUT_DIR"
 			echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
