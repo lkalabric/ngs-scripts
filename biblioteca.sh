@@ -347,11 +347,8 @@ function magma () {
 function organize_files () {
 	# Argumentos dentro da função:
     # $1 caminho de entrada dos dados INPUT_DIR
-	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
-		#OUTPUT_DIR=$2
-		echo "Entrada: $INPUT_DIR"
-		echo "Saída: $OUTPUT_DIR"
+
 	# ==============================================================================
 	# Script: organizar_arquivos.sh
 	# Descrição: Lê arquivos de um diretório, identifica a raiz do nome e os organiza
@@ -401,46 +398,59 @@ function organize_files () {
 	    # Move o arquivo para a pasta correspondente
 	    echo "Movendo '$file' -> '$root_name/'"
 	    mv "$file" "$root_name/"
+	done	
+}
+
+function read_dir () {
+	# Argumentos dentro da função:
+    # $1 caminho de entrada dos dados INPUT_DIR
+	# $2 caminho de saída dos resultados OUTPUT_DIR
+	INPUT_DIR=$1
+	OUTPUT_DIR=$2
+	
+	for SAMPLE in $INPUT_DIR; do
+		base_name=$(basename "$SAMPLE")
+		ls $OUTPUT_DIR/$base_name
 	done
 }
 
 
-
-# Quality control report
-# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 function fastqc () {
+	# Quality control report
+	# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+
 	# Argumentos dentro da função:
     # $1 caminho de entrada dos dados INPUT_DIR
-	# $2 caminho para salvamento dos resultados OUTPUT_DIR
-		INPUT_DIR=$1
-		OUTPUT_DIR=$2
-		echo "Entrada: $INPUT_DIR"
-		echo "Saída: $OUTPUT_DIR"
-	# Copia os arquivos brutos para iniciar o workflow
-	# cp "${INPUT_DIR}/*" "${OUTPUT_DIR}"
+	# $2 caminho de saída dos resultados OUTPUT_DIR
+	INPUT_DIR=$1
+	OUTPUT_DIR=$2
+	FASTQC_DIR="$OUTPUT_DIR/fastqc"
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+
+	# Análise propriamente dita
 	find "$OUTPUT_DIR" -type d | \
     while read -r INPUT_DIR; do
         # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
         base_name=$(basename "$INPUT_DIR")
-		OUTPUT_DIR="$base_name/fastqc"      
+		# OUTPUT_DIR="$base_name/fastqc"      
 		# Execução do comando propriamente
-		if [[ -n "$base_name" && ! -d "$OUTPUT_DIR" ]]; then
+		if [[ -n "$base_name" && ! -d "$FASTQC_DIR" ]]; then
 			echo "Criando a pasta dos resultados do fastqc..."
-			mkdir -vp "$OUTPUT_DIR"
+			mkdir -vp "$FASTQC_DIR"
 			echo -e "Executando fastqc nos dados disponíveis em ${INPUT_DIR}...\n"
-			fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/${INPUT_TYPE}
-			# INPUT_DIR=$OUTPUT_DIR
+			fastqc --noextract --nogroup -o ${OUTPUT_DIR} ${INPUT_DIR}/${INPUT_TYPE}			
 		else
 			echo "Dados analisados previamente..."
 		fi
 	done
+	$INPUT_DIR=$FASTQC_DIR
 }
 
-# Trimagem de apaptadores de dados de sequencias Illumina
-# Link: http://www.usadellab.org/cms/?page=trimmomatic
 function trim () {
+	# Trimagem de apaptadores de dados de sequencias Illumina
+	# Link: http://www.usadellab.org/cms/?page=trimmomatic
+
 	# Argumentos dentro da função:
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
