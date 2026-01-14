@@ -261,24 +261,6 @@ function install_conda_packages_if_missing () {
 	done
 }
 
-#function input_validation () {
-  # Criar um input_validation.sh a partir do código abaixo
-  # Validação dos dados
-  # Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
-  # Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
-  #INDEX=0
-  #for FILE in $(find ${INPUT_DIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
-  #	FULLNAME[$INDEX]=${FILE}
-  #	((INDEX++))
-  #done
-  #SAMPLENAME=$(echo $FULLNAME[0] | cut -d "E" -f 1)
-  #LIBSUFIX=$(echo $LIBNAME | cut -d "_" -f 2)
-  #if [[ $SAMPLENAME -ne $LIBSUFIX ]]; then
-  #    echo "Você copiou os dados errados para a pasta $LIBNAME!"
-  #    exit 3
-  #fi
-#}
-
 setup_directories () {
     # ----------------------------------------------------
     # Opcional: Descomente a linha abaixo para gerar arquivos de teste
@@ -343,6 +325,84 @@ function magma () {
          -r v2.2.2 \
          -params-file $INPUT_DIR/my_parameters_3_local.yml
 }
+
+#function input_validation () {
+  # Criar um input_validation.sh a partir do código abaixo
+  # Validação dos dados
+  # Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
+  # Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
+  #INDEX=0
+  #for FILE in $(find ${INPUT_DIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
+  #	FULLNAME[$INDEX]=${FILE}
+  #	((INDEX++))
+  #done
+  #SAMPLENAME=$(echo $FULLNAME[0] | cut -d "E" -f 1)
+  #LIBSUFIX=$(echo $LIBNAME | cut -d "_" -f 2)
+  #if [[ $SAMPLENAME -ne $LIBSUFIX ]]; then
+  #    echo "Você copiou os dados errados para a pasta $LIBNAME!"
+  #    exit 3
+  #fi
+#}
+
+function organize_files () {
+	# Argumentos dentro da função:
+    # $1 caminho de entrada dos dados INPUT_DIR
+	# $2 caminho para salvamento dos resultados OUTPUT_DIR
+		INPUT_DIR=$1
+		OUTPUT_DIR=$2
+	# ==============================================================================
+	# Script: organizar_arquivos.sh
+	# Descrição: Lê arquivos de um diretório, identifica a raiz do nome e os organiza
+	#            em pastas baseadas nessa raiz.
+	# ==============================================================================
+	# Diretório alvo (padrão é o diretório atual se nenhum for passado)
+	TARGET_DIR="$INPUT_DIR"
+
+	# Verifica se o diretório existe
+	if [[ ! -d "$TARGET_DIR" ]]; then
+	    echo "Erro: O diretório '$TARGET_DIR' não existe."
+	    exit 1
+	fi
+	echo "Iniciando a organização em: $TARGET_DIR"
+
+	# Entra no diretório para facilitar a manipulação
+	cd "$TARGET_DIR" || exit
+	
+	# Loop por todos os arquivos no diretório
+	for file in *; do
+	    # Pula se for um diretório ou o próprio script
+	    if [[ -d "$file" || "$file" == "organizar_arquivos.sh" ]]; then
+	        continue
+	    fi
+	
+	    # Identifica a raiz do nome. 
+	    # Aqui, definimos 'raiz' como tudo antes do PRIMEIRO ponto ou sublinhado.
+	    # Exemplo: 'amostra01_R1.fastq' -> 'amostra01'
+	    # Exemplo: 'relatorio.v1.pdf'    -> 'relatorio'
+	    
+	    # Usando Parameter Expansion para pegar a string antes do primeiro '.' ou '_'
+	    # Tentamos primeiro o sublinhado, depois o ponto.
+	    root_name="${file%%_*}"
+	    root_name="${root_name%%.*}"
+	
+	    # Se por algum motivo a raiz ficar vazia, pula o arquivo
+	    if [[ -z "$root_name" ]]; then
+	        continue
+	    fi
+	
+	    # Cria o diretório da raiz se não existir
+	    if [[ ! -d "$OUTPUT_DIR/$root_name" ]]; then
+	        echo "Criando pasta: $OUTPUT_DIR/$root_name"
+	        mkdir -p "$OUTPUT_DIR/$root_name"
+	    fi
+	
+	    # Move o arquivo para a pasta correspondente
+	    echo "Movendo '$file' -> '$OUTPUT_DIR/$root_name/'"
+	    mv "$file" "$OUTPUT_DIR/$root_name/"
+	done
+}
+
+
 
 # Quality control report
 # Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
