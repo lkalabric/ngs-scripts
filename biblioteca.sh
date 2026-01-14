@@ -357,9 +357,9 @@ function fastqc () {
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	find "$OUTPUT_DIR" -type d | \
-    while read -r library_name; do
+    while read -r INPUT_DIR; do
         # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
-        base_name=$(basename "$library_name")
+        base_name=$(basename "$INPUT_DIR")
 		OUTPUT_DIR="$base_name/fastqc"      
 		# Execução do comando propriamente
 		if [[ -n "$base_name" and ! -d "$OUTPUT_DIR" ]]; then
