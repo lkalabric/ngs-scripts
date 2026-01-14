@@ -441,7 +441,7 @@ function fastqc () {
 			FASTQC_DIR="$OUTPUT_DIR/$base_name/fastqc"
 			mkdir -vp $FASTQC_DIR
 			echo -e "Executando o fastqc nos dados disponíveis em ${SAMPLE}...\n"
-			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${SAMPLE}			
+			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${SAMPLE}/*		
 		else
 			echo "Dados analisados previamente..."
 		fi
