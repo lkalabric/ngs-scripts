@@ -429,11 +429,24 @@ function fastqc () {
 	# $2 caminho de saída dos resultados OUTPUT_DIR
 	INPUT_DIR=$1
 	OUTPUT_DIR=$2
-	FASTQC_DIR="$OUTPUT_DIR/fastqc"
+	
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 
 	# Análise propriamente dita
+	for SAMPLE in $(find $INPUT_DIR/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
+		base_name=$(basename "$SAMPLE")
+		if [[ -n "$base_name" && ! -d "$OUTPUT_DIR/$base_name/fastqc" ]]; then
+			echo "Criando a pasta de saída nos dados ${SAMPLE}..."
+			FASTQC_DIR="$OUTPUT_DIR/$base_name/fastqc"
+			mkdir -vp $FASTQC_DIR
+			echo -e "Executando o fastqc nos dados disponíveis em ${SAMPLE}...\n"
+			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${SAMPLE}			
+		else
+			echo "Dados analisados previamente..."
+		fi
+	done
+	
 	find "$OUTPUT_DIR" -type d | \
     while read -r INPUT_DIR; do
         # 1. Obter nome do arquivo removendo o caminho (e.g., 'data/')
