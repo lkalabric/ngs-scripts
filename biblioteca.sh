@@ -411,7 +411,7 @@ function read_dir () {
 	for SAMPLE in $(find $INPUT_DIR -type d); do
 		base_name=$(basename "$SAMPLE")
 		mkdir $OUTPUT_DIR/$base_name
-		cp $INPUT_DIR/$base_name $OUTPUT_DIR/$base_name
+		cp $INPUT_DIR/$base_name $OUTPUT_DIR/$base_name		
 	done
 }
 
