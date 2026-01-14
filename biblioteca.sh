@@ -407,9 +407,13 @@ function read_dir () {
 	# $2 caminho de saída dos resultados OUTPUT_DIR
 	INPUT_DIR=$1
 	OUTPUT_DIR=$2
+	echo "Entrada: $INPUT_DIR"
+	echo "Saída: $OUTPUT_DIR"
 	
 	for SAMPLE in $(find $INPUT_DIR -type d); do
 		base_name=$(basename "$SAMPLE")
+		echo "Sample: $SAMPLE"
+		echo "Basename: $base_name"
 		mkdir $OUTPUT_DIR/$base_name
 		cp $INPUT_DIR/$base_name/* $OUTPUT_DIR/$base_name/
 	done
