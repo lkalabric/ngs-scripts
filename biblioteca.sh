@@ -349,7 +349,9 @@ function organize_files () {
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
-		OUTPUT_DIR=$2
+		#OUTPUT_DIR=$2
+		echo "Entrada: $INPUT_DIR"
+		echo "Saída: $OUTPUT_DIR"
 	# ==============================================================================
 	# Script: organizar_arquivos.sh
 	# Descrição: Lê arquivos de um diretório, identifica a raiz do nome e os organiza
@@ -391,16 +393,15 @@ function organize_files () {
 	    fi
 	
 	    # Cria o diretório da raiz se não existir
-	    if [[ ! -d "$OUTPUT_DIR/$root_name" ]]; then
-	        echo "Criando pasta: $OUTPUT_DIR/$root_name"
-	        mkdir -p "$OUTPUT_DIR/$root_name"
+	    if [[ ! -d "$root_name" ]]; then
+	        echo "Criando pasta: $root_name"
+	        mkdir -p "$root_name"
 	    fi
 	
 	    # Move o arquivo para a pasta correspondente
-	    echo "Movendo '$file' -> '$OUTPUT_DIR/$root_name/'"
-	    mv "$file" "$OUTPUT_DIR/$root_name/"
+	    echo "Movendo '$file' -> '$root_name/'"
+	    mv "$file" "$root_name/"
 	done
-	$INPUT_DIR=$OUTPUT_DIR
 }
 
 
@@ -413,6 +414,8 @@ function fastqc () {
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
 		OUTPUT_DIR=$2
+		echo "Entrada: $INPUT_DIR"
+		echo "Saída: $OUTPUT_DIR"
 	# Copia os arquivos brutos para iniciar o workflow
 	# cp "${INPUT_DIR}/*" "${OUTPUT_DIR}"
 	# Parâmetros padrões ou personalizados pelo usuário
