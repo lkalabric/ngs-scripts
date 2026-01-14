@@ -432,6 +432,7 @@ function fastqc () {
 	
 	# Parâmetros padrões ou personalizados pelo usuário
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+	exit 1
 
 	# Análise propriamente dita
 	for SAMPLE in $(find "$INPUT_DIR" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
