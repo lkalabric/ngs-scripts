@@ -437,11 +437,11 @@ function fastqc () {
 	for SAMPLE in $(find $INPUT_DIR/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
 		base_name=$(basename "$SAMPLE")
 		if [[ -n "$base_name" && ! -d "$OUTPUT_DIR/$base_name/fastqc" ]]; then
-			echo "Criando a pasta de saída nos dados ${SAMPLE}..."
+			echo "Criando a pasta de saída nos dados ${base_name}..."
 			FASTQC_DIR="$OUTPUT_DIR/$base_name/fastqc"
 			mkdir -vp $FASTQC_DIR
-			echo -e "Executando o fastqc nos dados disponíveis em ${SAMPLE}...\n"
-			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${SAMPLE}/*		
+			echo -e "Executando o fastqc nos dados disponíveis em ${base_name}...\n"
+			fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${base_name}/*		
 		else
 			echo "Dados analisados previamente..."
 		fi
