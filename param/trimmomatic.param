@@ -9,6 +9,7 @@ fi
 
 # Detecta automaticamente o número de Threads do seu servidor
 THREADS=$(nproc)
+echo "Threads: $THREADS"
 
 SLIDINGWINDOW="4:20"
 MINLEN="35"
