@@ -34,7 +34,7 @@
 			
 			tar trimmomatic PE \
 				-threads "$THREADS" \
-			    "${INPUT_DIR}/${R1}" "${INPUT_DIR}/${R2}"\
+			    "${INPUT_DIR}/${R1}" "${INPUT_DIR}/${R2}" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
 			    ILLUMINACLIP:"$ADAPTERS":2:30:10 \
@@ -44,7 +44,7 @@
 			    MINLEN:"$MINLEN"
 						
 			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-			zcat "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" > "${TRIMMOMATIC_DIR}/${RUNNAME}_R1R2u.fastq.gz"
+			# zcat "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" > "${TRIMMOMATIC_DIR}/${RUNNAME}_R1R2u.fastq.gz"
 		else
 			echo "Dados analisados previamente..."
 		fi
