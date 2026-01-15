@@ -105,14 +105,15 @@ fi
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
 	'config'
-	'magma'
 	'organize_files fastq_qc'
+	'organize_files trim1_qc'
 	'setup_directories fastq_qc'
 	'spades_bper'
 	'trim_bper spades_bper'
 	'trim_bper musket_bper spades_bper'
 	'trim_bper musket_bper flash_bper spades_bper'
 	'spades_bper spades2_bper'
+	'magma'
 )
 
 # Validação do WF
