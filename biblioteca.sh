@@ -437,8 +437,8 @@ function trim1_qc () {
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 
 			# Segundo o Gemini, o trimmomatic não reconhece wildcard "*". Para evitar isso, estamos obtendo o nome literal de cada arquivo
-			R1=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz)
-			R2=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz)
+			R1=$(ls ${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz)
+			R2=$(ls ${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz)
 			
 			# Executa o filtro de qualidade
 			trimmomatic PE \
