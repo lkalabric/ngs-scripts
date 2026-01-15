@@ -28,8 +28,7 @@
 			# Executa o filtro de qualidade
 			trimmomatic PE \
 				-threads "$THREADS" \
-			    "${INPUT_DIR}/${RUNNAME}_S16_L001_R1_001.fastq.gz" \
-			    "${INPUT_DIR}/${RUNNAME}_S16_L001_R2_001.fastq.gz" \
+			    "${INPUT_DIR}/${RUNNAME}/*.fastq.gz" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" \
 			    "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" \
