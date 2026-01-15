@@ -436,7 +436,7 @@ function trim1_qc () {
 			mkdir -vp $TEMP_DIR
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 			# Executa o filtro de qualidade
-			trimmomatic PE -threads ${THREADS} -trimlog ${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt \
+			trimmomatic PE -threads ${THREADS} -trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
 						-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
 						${INPUT_DIR}/*.fastq* \
 						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq ${TEMP_DIR}/${RUNNAME}_R1u.fastq \
@@ -447,7 +447,9 @@ function trim1_qc () {
 		else
 			echo "Dados analisados previamente..."
 		fi
-	done      
+	done
+	# Inicia o processo de passagem dos dados para o pipeline
+	$PIPE_DIR="trimmomatic"
 }
 
 # Correção de erros
