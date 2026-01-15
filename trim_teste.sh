@@ -12,10 +12,12 @@
 	echo "Output: ${OUTPUT_DIR}"
 
 	# Parâmetros padrões ou personalizados pelo usuário
-		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+		source "${HOME}/repos/ngs-scripts/param/trimmomatic.param"
 
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
-	source activate trimmomatic
+		source activate trimmomatic
+
+	# Análise propriamente dita
 	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
 		TRIMMOMATIC_DIR="${OUTPUT_DIR}/${RUNNAME}/trimmomatic"
 		TEMP_DIR="$TRIMMOMATIC_DIR/temp"
