@@ -27,7 +27,7 @@
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 			# Executa o filtro de qualidade
 			trimmomatic PE \
-						-threads ${THREADS} \
+						-threads "${THREADS}" \
 						#-trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
 						#-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
 						"${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz" "${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz" \
