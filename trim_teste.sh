@@ -27,12 +27,12 @@
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 
 			# Segundo o Gemini, o trimmomatic não reconhece *. Para evitar isso estamos obtendo o nome literal de cada arquivo
-			R1=$(ls "${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz")
-			R2=$(ls "${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz")
+			R1=$(ls "${HOME}/${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz")
+			R2=$(ls "${HOME}/${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz")
 			
 			# Executa o filtro de qualidade
 			
-			trimmomatic PE \
+			tar trimmomatic PE \
 				-threads "$THREADS" \
 			    "${R1}" "${R2}"\
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
