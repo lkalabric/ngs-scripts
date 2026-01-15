@@ -106,7 +106,7 @@ fi
 WORKFLOWLIST=(
 	'config'
 	'organize_files fastq_qc'
-	'organize_files fastq_qc'
+	'organize_files fastq_qc trim1_qc'
 	'setup_directories fastq_qc'
 	'spades_bper'
 	'trim_bper spades_bper'
