@@ -27,8 +27,8 @@
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 
 			# Segundo o Gemini, o trimmomatic não reconhece *. Para evitar isso estamos obtendo o nome literal de cada arquivo
-			R1=$(basename "${HOME}/${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz")
-			R2=$(basename "${HOME}/${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz")
+			R1=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz)
+			R2=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz)
 			
 			# Executa o filtro de qualidade
 			
