@@ -25,14 +25,18 @@
 			mkdir -vp $TRIMMOMATIC_DIR
 			mkdir -vp $TEMP_DIR
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
+
+			# Segundo o Gemini, o trimmomatic não reconhece *. Para evitar isso estamos obtendo o nome literal de cada arquivo
+			R1=$(ls "${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz)
+			R2=$(ls "${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz)
+			
 			# Executa o filtro de qualidade
+			
 			trimmomatic PE \
 				-threads "$THREADS" \
-			    "${INPUT_DIR}/${RUNNAME}/*.fastq.gz" \
-			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" \
-			    "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
-			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" \
-			    "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
+			    "${R1} ${R2}\
+			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
+			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
 			    ILLUMINACLIP:"$ADAPTERS":2:30:10 \
 			    LEADING:3 \
 			    TRAILING:3 \
