@@ -30,15 +30,15 @@
 						-threads ${THREADS} \
 						#-trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
 						#-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
-						${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz ${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz \
-						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz ${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz \
-						${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz ${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz \
+						"${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz" "${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz" \
+						"${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
+						"${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
 						ILLUMINACLIP:"$ADAPTERS":2:30:10 \
 						LEADING:3 TRAILING:3 \
-						SLIDINGWINDOW:${SLIDINGWINDOW} MINLEN:${MINLEN}
+						SLIDINGWINDOW:"${SLIDINGWINDOW}" MINLEN:"${MINLEN}"
 						
 			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-			cat ${TEMP_DIR}/${RUNNAME}_R1u.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq > ${OUTPUT_DIR}/${RUNNAME}_R1R2u.fastq
+			zcat "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" > "${TRIMMOMATIC_DIR}/${RUNNAME}_R1R2u.fastq.gz"
 		else
 			echo "Dados analisados previamente..."
 		fi
