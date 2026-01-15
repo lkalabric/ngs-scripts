@@ -326,24 +326,6 @@ function magma () {
          -params-file $INPUT_DIR/my_parameters_3_local.yml
 }
 
-#function input_validation () {
-  # Criar um input_validation.sh a partir do código abaixo
-  # Validação dos dados
-  # Lê o nome dos arquivos de entrada. O nome curto será o próprio nome da library
-  # Renomear os arquivos R1 e R2 para conter o prefixo LIBNAME_ (ex. Bper42_xxxx)
-  #INDEX=0
-  #for FILE in $(find ${INPUT_DIR} -mindepth 1 -type f -name *.fastq.gz -exec basename {} \; | sort); do
-  #	FULLNAME[$INDEX]=${FILE}
-  #	((INDEX++))
-  #done
-  #SAMPLENAME=$(echo $FULLNAME[0] | cut -d "E" -f 1)
-  #LIBSUFIX=$(echo $LIBNAME | cut -d "_" -f 2)
-  #if [[ $SAMPLENAME -ne $LIBSUFIX ]]; then
-  #    echo "Você copiou os dados errados para a pasta $LIBNAME!"
-  #    exit 3
-  #fi
-#}
-
 function organize_files () {
 	# Argumentos dentro da função:
     # $1 caminho de entrada dos dados INPUT_DIR
@@ -368,9 +350,9 @@ function organize_files () {
 	cd "$TARGET_DIR" || exit
 	
 	# Loop por todos os arquivos no diretório
-	for file in *; do
+	for filename in *; do
 	    # Pula se for um diretório ou o próprio script
-	    if [[ -d "$file" || "$file" == "organizar_arquivos.sh" ]]; then
+	    if [[ -d "$filename" || "$filename" == "organizar_arquivos.sh" ]]; then
 	        continue
 	    fi
 	
@@ -381,7 +363,7 @@ function organize_files () {
 	    
 	    # Usando Parameter Expansion para pegar a string antes do primeiro '.' ou '_'
 	    # Tentamos primeiro o sublinhado, depois o ponto.
-	    root_name="${file%%_*}"
+	    root_name="${filename%%_*}"
 	    root_name="${root_name%%.*}"
 	
 	    # Se por algum motivo a raiz ficar vazia, pula o arquivo
@@ -437,28 +419,35 @@ function trim1_qc () {
     # $1 caminho de entrada dos dados INPUT_DIR
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
-		OUTPUT_DIR="$2/trimmomatic"
-		TEMP_DIR="$OUTPUT_DIR/temp"
+		OUTPUT_DIR=$2
 	echo "Input: ${INPUT_DIR}"
 	echo "Output: ${OUTPUT_DIR}"
+
+	# Parâmetros padrões ou personalizados pelo usuário
+		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
-	source activate trimmomatic_env
-	if [[ ! -d $OUTPUT_DIR ]]; then
-		mkdir -vp $OUTPUT_DIR
-		mkdir -vp $TEMP_DIR
-		echo -e "\nExecutando trimmomatic em ${INPUT_DIR}...\n"
-		# Executa o filtro de qualidade
-		trimmomatic PE -threads ${THREADS} -trimlog ${OUTPUT_DIR}/${LIBNAME}_trimlog.txt \
-					-summary ${OUTPUT_DIR}/${LIBNAME}_summary.txt \
-					${INPUT_DIR}/*.fastq* \
-					${OUTPUT_DIR}/${LIBNAME}_R1.fastq ${TEMP_DIR}/${LIBNAME}_R1u.fastq \
-					${OUTPUT_DIR}/${LIBNAME}_R2.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq \
-					SLIDINGWINDOW:4:20 MINLEN:35
-		# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-		cat ${TEMP_DIR}/${LIBNAME}_R1u.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq > ${OUTPUT_DIR}/${LIBNAME}_R1R2u.fastq
-	else
-		echo "Dados analisados previamente..."
-	fi
+	source activate trimmomatic
+	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
+		TRIMMOMATIC_DIR="${OUTPUT_DIR}/${RUNNAME}/trimmomatic"
+		TEMP_DIR="$OUTPUT_DIR/${RUNNAME}/temp"
+		if [[ ! -d $OUTPUT_DIR ]]; then
+			mkdir -vp $OUTPUT_DIR
+			mkdir -vp $TEMP_DIR
+			echo -e "\nExecutando trimmomatic em ${INPUT_DIR}...\n"
+			# Executa o filtro de qualidade
+			trimmomatic PE -threads ${THREADS} -trimlog ${OUTPUT_DIR}/${LIBNAME}_trimlog.txt \
+						-summary ${OUTPUT_DIR}/${LIBNAME}_summary.txt \
+						${INPUT_DIR}/*.fastq* \
+						${OUTPUT_DIR}/${LIBNAME}_R1.fastq ${TEMP_DIR}/${LIBNAME}_R1u.fastq \
+						${OUTPUT_DIR}/${LIBNAME}_R2.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq \
+						SLIDINGWINDOW:4:20 MINLEN:35
+			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
+			cat ${TEMP_DIR}/${LIBNAME}_R1u.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq > ${OUTPUT_DIR}/${LIBNAME}_R1R2u.fastq
+		else
+			echo "Dados analisados previamente..."
+		fi
+	done
   	FLAG=1
 	INPUT_DIR=$OUTPUT_DIR              
 }
