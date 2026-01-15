@@ -34,7 +34,7 @@
 			
 			trimmomatic PE \
 				-threads "$THREADS" \
-			    "${R1} ${R2}\
+			    "${R1}" "${R2}"\
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
 			    ILLUMINACLIP:"$ADAPTERS":2:30:10 \
