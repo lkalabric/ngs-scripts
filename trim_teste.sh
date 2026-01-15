@@ -30,7 +30,7 @@
 						-threads ${THREADS} \
 						#-trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
 						#-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
-						${INPUT_DIR}/*.fastq* \
+						${INPUT_DIR}/${RUNNAME}/*.fastq* \
 						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq ${TEMP_DIR}/${RUNNAME}_R1u.fastq \
 						${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq \
 						ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
