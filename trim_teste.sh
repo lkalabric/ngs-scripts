@@ -43,4 +43,4 @@
 		fi
 	done
 	# Inicia o processo de passagem dos dados para o pipeline
-	$PIPE_DIR="trimmomatic"
+	PIPE_DIR="trimmomatic"
