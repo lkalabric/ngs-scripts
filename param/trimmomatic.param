@@ -1,4 +1,15 @@
-ADAPTERS="${CONDA_PREFIX}/share/trimmomatic/adapters/"
+# Detecta automaticamente o caminho dos adaptadores no ambiente Conda ativo
+ADAPTER_PATH=$(find $CONDA_PREFIX -name "TruSeq3-PE.fa" | head -n 1)
+
+if [ -z "$ADAPTER_PATH" ]; then
+    echo "Erro: Arquivo de adaptadores não encontrado. O ambiente Conda está ativo?"
+    exit 1
+  else
+  ADAPTERS="${CONDA_PREFIX}/share/trimmomatic/adapters/"
+fi
+
+# Detecta automaticamente o número de Threads do seu servidor
 THREADS=$(nproc)
+
 SLIDINGWINDOW="SLIDINGWINDOW:4:20"
 MINLEN="MINLEN:35"
