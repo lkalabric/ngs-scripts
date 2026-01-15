@@ -32,7 +32,7 @@
 			
 			# Executa o filtro de qualidade
 			
-			tar trimmomatic PE \
+			trimmomatic PE \
 				-threads "$THREADS" \
 			    "$R1" "$R2" \
 			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
