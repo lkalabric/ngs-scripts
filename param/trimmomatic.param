@@ -1,3 +1,4 @@
+ADAPTERS="${CONDA_PREFIX}/share/trimmomatic/adapters/"
 THREADS=$(nproc)
 SLIDINGWINDOW="SLIDINGWINDOW:4:20"
 MINLEN="MINLEN:35"
