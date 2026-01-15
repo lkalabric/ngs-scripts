@@ -1,5 +1,6 @@
 # Detecta automaticamente o caminho dos adaptadores no ambiente Conda ativo
 ADAPTERS=$(find $CONDA_PREFIX -name "TruSeq3-PE.fa" | head -n 1)
+echo "Adaptadores: $ADAPTERS"
 
 if [ -z "$ADAPTERS" ]; then
     echo "Erro: Arquivo de adaptadores não encontrado. O ambiente Conda está ativo?"
