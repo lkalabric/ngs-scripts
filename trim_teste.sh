@@ -26,12 +26,16 @@
 			mkdir -vp $TEMP_DIR
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 			# Executa o filtro de qualidade
-			trimmomatic PE -threads ${THREADS} -trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
+			trimmomatic PE \
+						-threads ${THREADS} \
+						#-trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
 						-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
 						${INPUT_DIR}/*.fastq* \
 						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq ${TEMP_DIR}/${RUNNAME}_R1u.fastq \
 						${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq \
-						${SLIDINGWINDOW} ${MINLEN}
+						ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
+						LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+						# ${SLIDINGWINDOW} ${MINLEN}
 			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
 			cat ${TEMP_DIR}/${RUNNAME}_R1u.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq > ${OUTPUT_DIR}/${RUNNAME}_R1R2u.fastq
 		else
