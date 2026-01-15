@@ -439,7 +439,7 @@ function fastqc () {
 		echo "Criando a pasta de saída nos dados ${base_name}..."
 		mkdir -vp ${FASTQC_DIR}
 		echo -e "Executando o fastqc nos dados disponíveis em ${base_name}...\n"
-		fastqc --noextract --nogroup -o ${FASTQC_DIR} "${INPUT_DIR}/${base_name}/*"
+		fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${base_name}/*
 		#if [[ -n "$base_name" && ! -d "$FASTQC_DIR" ]]; then
 		
 		#else
