@@ -106,8 +106,8 @@ fi
 WORKFLOWLIST=(
 	'config'
 	'magma'
-	'organize_files fastqc'
-	'setup_directories fastqc'
+	'organize_files fastq_qc'
+	'setup_directories fastq_qc'
 	'spades_bper'
 	'trim_bper spades_bper'
 	'trim_bper musket_bper spades_bper'
