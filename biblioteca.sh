@@ -420,14 +420,14 @@ function trim1_qc () {
 	# $2 caminho para salvamento dos resultados OUTPUT_DIR
 		INPUT_DIR=$1
 		OUTPUT_DIR=$2
-	echo "Input: ${INPUT_DIR}"
-	echo "Output: ${OUTPUT_DIR}"
 
 	# Parâmetros padrões ou personalizados pelo usuário
-		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
+		source "${HOME}/repos/ngs-scripts/param/trimmomatic.param"
 
 	# Habilita o trimmomatic instalado em um ambiente conda dedicado
-	source activate trimmomatic
+		source activate trimmomatic
+
+	# Análise propriamente dita
 	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
 		TRIMMOMATIC_DIR="${OUTPUT_DIR}/${RUNNAME}/trimmomatic"
 		TEMP_DIR="$TRIMMOMATIC_DIR/temp"
@@ -435,21 +435,31 @@ function trim1_qc () {
 			mkdir -vp $TRIMMOMATIC_DIR
 			mkdir -vp $TEMP_DIR
 			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
+
+			# Segundo o Gemini, o trimmomatic não reconhece wildcard "*". Para evitar isso, estamos obtendo o nome literal de cada arquivo
+			R1=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R1*.fastq.gz)
+			R2=$(ls ${HOME}/${INPUT_DIR}/${RUNNAME}/*_R2*.fastq.gz)
+			
 			# Executa o filtro de qualidade
-			trimmomatic PE -threads ${THREADS} -trimlog "${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt" \
-						-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
-						${INPUT_DIR}/*.fastq* \
-						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq ${TEMP_DIR}/${RUNNAME}_R1u.fastq \
-						${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq \
-						${SLIDINGWINDOW} ${MINLEN}
+			trimmomatic PE \
+				-threads "$THREADS" \
+			    "$R1" "$R2" \
+			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" \
+			    "${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" \
+			    ILLUMINACLIP:"$ADAPTERS":2:30:10 \
+			    LEADING:"$LEADING" \
+			    TRAILING:"$TRAILING" \
+			    SLIDINGWINDOW:"$SLIDINGWINDOW" \
+			    MINLEN:"$MINLEN"
+						
 			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-			cat ${TEMP_DIR}/${RUNNAME}_R1u.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq > ${OUTPUT_DIR}/${RUNNAME}_R1R2u.fastq
+			# zcat "${TEMP_DIR}/${RUNNAME}_R1u.fastq.gz" "${TEMP_DIR}/${RUNNAME}_R2u.fastq.gz" > "${TRIMMOMATIC_DIR}/${RUNNAME}_R1R2u.fastq.gz"
 		else
 			echo "Dados analisados previamente..."
 		fi
 	done
 	# Inicia o processo de passagem dos dados para o pipeline
-	$PIPE_DIR="trimmomatic"
+	PIPE_DIR="trimmomatic"
 }
 
 # Correção de erros
