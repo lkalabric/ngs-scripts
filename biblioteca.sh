@@ -397,12 +397,12 @@ function fastq_qc () {
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	
 	# Análise propriamente dita
-	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
+	for RUNNAME in $(find "${INPUT_DIR}/." -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
 		FASTQC_DIR="${OUTPUT_DIR}/${RUNNAME}/fastqc"
 		echo "Criando a pasta de saída nos dados ${RUNNAME}..."
 		mkdir -vp ${FASTQC_DIR}
 		echo -e "Executando o fastqc nos dados disponíveis em ${RUNNAME}...\n"
-		fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${RUNNAME}/*
+		fastqc --noextract --nogroup -o ${FASTQC_DIR} "${INPUT_DIR}/${RUNNAME}/*"
 		#if [[ -n "$RUNNAME" && ! -d "$FASTQC_DIR" ]]; then
 		
 		#else
@@ -430,26 +430,24 @@ function trim1_qc () {
 	source activate trimmomatic
 	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
 		TRIMMOMATIC_DIR="${OUTPUT_DIR}/${RUNNAME}/trimmomatic"
-		TEMP_DIR="$OUTPUT_DIR/${RUNNAME}/temp"
-		if [[ ! -d $OUTPUT_DIR ]]; then
-			mkdir -vp $OUTPUT_DIR
+		TEMP_DIR="$TRIMMOMATIC_DIR/temp"
+		if [[ ! -d $TRIMMOMATIC_DIR ]]; then
+			mkdir -vp $TRIMMOMATIC_DIR
 			mkdir -vp $TEMP_DIR
-			echo -e "\nExecutando trimmomatic em ${INPUT_DIR}...\n"
+			echo -e "\nExecutando trimmomatic em ${RUNNAME}...\n"
 			# Executa o filtro de qualidade
-			trimmomatic PE -threads ${THREADS} -trimlog ${OUTPUT_DIR}/${LIBNAME}_trimlog.txt \
-						-summary ${OUTPUT_DIR}/${LIBNAME}_summary.txt \
+			trimmomatic PE -threads ${THREADS} -trimlog ${TRIMMOMATIC_DIR}/${RUNNAME}_trimlog.txt \
+						-summary ${TRIMMOMATIC_DIR}/${RUNNAME}_summary.txt \
 						${INPUT_DIR}/*.fastq* \
-						${OUTPUT_DIR}/${LIBNAME}_R1.fastq ${TEMP_DIR}/${LIBNAME}_R1u.fastq \
-						${OUTPUT_DIR}/${LIBNAME}_R2.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq \
-						SLIDINGWINDOW:4:20 MINLEN:35
+						${TRIMMOMATIC_DIR}/${RUNNAME}_R1.fastq ${TEMP_DIR}/${RUNNAME}_R1u.fastq \
+						${TRIMMOMATIC_DIR}/${RUNNAME}_R2.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq \
+						${SLIDINGWINDOW} ${MINLEN}
 			# Concatena as reads forward e reversar não pareadas para seguir como arquivo singled-end
-			cat ${TEMP_DIR}/${LIBNAME}_R1u.fastq ${TEMP_DIR}/${LIBNAME}_R2u.fastq > ${OUTPUT_DIR}/${LIBNAME}_R1R2u.fastq
+			cat ${TEMP_DIR}/${RUNNAME}_R1u.fastq ${TEMP_DIR}/${RUNNAME}_R2u.fastq > ${OUTPUT_DIR}/${RUNNAME}_R1R2u.fastq
 		else
 			echo "Dados analisados previamente..."
 		fi
-	done
-  	FLAG=1
-	INPUT_DIR=$OUTPUT_DIR              
+	done      
 }
 
 # Correção de erros
