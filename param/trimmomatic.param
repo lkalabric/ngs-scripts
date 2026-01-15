@@ -11,5 +11,7 @@ fi
 THREADS=$(nproc)
 echo "Threads: $THREADS"
 
+LEADING="3"
+TRAILING="3"
 SLIDINGWINDOW="4:20"
 MINLEN="35"
