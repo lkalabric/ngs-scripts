@@ -420,7 +420,7 @@ function read_dir () {
 }
 
 
-function fastqc () {
+function fastq_qc () {
 	# Quality control report
 	# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 
