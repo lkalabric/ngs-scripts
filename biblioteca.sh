@@ -401,25 +401,6 @@ function organize_files () {
 	done	
 }
 
-function read_dir () {
-	# Argumentos dentro da função:
-    # $1 caminho de entrada dos dados INPUT_DIR
-	# $2 caminho de saída dos resultados OUTPUT_DIR
-	INPUT_DIR=$1
-	OUTPUT_DIR=$2
-	echo "Entrada: $INPUT_DIR"
-	echo "Saída: $OUTPUT_DIR"
-	
-	for SAMPLE in $(find $INPUT_DIR/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
-		base_name=$(basename "$SAMPLE")
-		echo "Sample: $SAMPLE"
-		echo "Basename: $base_name"
-		mkdir $OUTPUT_DIR/$base_name
-		cp $INPUT_DIR/$base_name/* $OUTPUT_DIR/$base_name/
-	done
-}
-
-
 function fastq_qc () {
 	# Quality control report
 	# Link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
@@ -434,13 +415,13 @@ function fastq_qc () {
 		source "${HOME}/repos/ngs-scripts/param/fastqc.param"
 	
 	# Análise propriamente dita
-	for base_name in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
-		FASTQC_DIR="${OUTPUT_DIR}/${base_name}/fastqc"
-		echo "Criando a pasta de saída nos dados ${base_name}..."
+	for RUNNAME in $(find ${INPUT_DIR}/. -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort); do
+		FASTQC_DIR="${OUTPUT_DIR}/${RUNNAME}/fastqc"
+		echo "Criando a pasta de saída nos dados ${RUNNAME}..."
 		mkdir -vp ${FASTQC_DIR}
-		echo -e "Executando o fastqc nos dados disponíveis em ${base_name}...\n"
-		fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${base_name}/*
-		#if [[ -n "$base_name" && ! -d "$FASTQC_DIR" ]]; then
+		echo -e "Executando o fastqc nos dados disponíveis em ${RUNNAME}...\n"
+		fastqc --noextract --nogroup -o ${FASTQC_DIR} ${INPUT_DIR}/${RUNNAME}/*
+		#if [[ -n "$RUNNAME" && ! -d "$FASTQC_DIR" ]]; then
 		
 		#else
 		#	echo "Dados analisados previamente..."
@@ -448,7 +429,7 @@ function fastq_qc () {
 	done	
 }
 
-function trim () {
+function trim1_qc () {
 	# Trimagem de apaptadores de dados de sequencias Illumina
 	# Link: http://www.usadellab.org/cms/?page=trimmomatic
 
