@@ -97,6 +97,7 @@ fi
 # Main do script
 # ==============
 # wf1 - system config
+# wf2 - blast analysis
 # wf2 - consortium/MAGMA
 # wf3 - quality control
 # wf4 - quality control and trimmomatic
@@ -105,6 +106,7 @@ fi
 # Etapas obrigatórios: basecalling, demux/primer_removal ou demux_headcrop, reads_polishing e algum método de classificação taxonômica
 WORKFLOWLIST=(
 	'config'
+	'makeblast_db'
 	'organize_files fastq_qc'
 	'organize_files fastq_qc trim1_qc'
 	'setup_directories fastq_qc'
